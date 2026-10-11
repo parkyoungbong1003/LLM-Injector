@@ -257,9 +257,6 @@
                         <span data-i18n="ph_overlay_direct">스크린샷 자리: 바로입력 오버레이 (images/overlay-direct.png)</span>
                         <!-- <img src="images/overlay-direct.png" alt="바로입력" class="w-full h-auto rounded-lg"> -->
                     </div>
-                    <button data-overlay-video="direct" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
-                    </button>
                 </div>
                 <!-- Mode 2: 대화창 -->
                 <div class="minimal-card p-8 reveal">
@@ -275,9 +272,6 @@
                         <span data-i18n="ph_overlay_chat">스크린샷 자리: 대화창 오버레이 (images/overlay-chat.png)</span>
                         <!-- <img src="images/overlay-chat.png" alt="대화창" class="w-full h-auto rounded-lg"> -->
                     </div>
-                    <button data-overlay-video="chat" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
-                    </button>
                 </div>
                 <!-- Mode 3: 빠른실행 -->
                 <div class="minimal-card p-8 reveal">
@@ -293,22 +287,7 @@
                         <span data-i18n="ph_overlay_quick">스크린샷 자리: 빠른실행 오버레이 (images/overlay-quick.png)</span>
                         <!-- <img src="images/overlay-quick.png" alt="빠른실행" class="w-full h-auto rounded-lg"> -->
                     </div>
-                    <button data-overlay-video="quick" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
-                    </button>
                 </div>
-            </div>
-            <!-- 모드별 시연 영상 플레이어 -->
-            <div id="overlay-demo" class="mt-12 reveal">
-                <div class="relative max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-100 bg-black aspect-video shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
-                    <video id="overlay-video" class="w-full h-full object-cover hidden" controls playsinline preload="none"></video>
-                    <div id="overlay-video-ph" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center p-6">
-                        <i class="fas fa-film text-3xl text-gray-600"></i>
-                        <p class="text-white/70 text-sm font-medium" data-i18n="overlay_video_ph">위 카드의 '시연 영상 보기'를 누르면 해당 모드 영상이 재생됩니다</p>
-                        <p class="text-white/40 text-xs">videos/overlay-direct.mp4 · videos/overlay-chat.mp4 · videos/overlay-quick.mp4</p>
-                    </div>
-                </div>
-                <p id="overlay-video-cap" class="text-center text-sm text-gray-500 mt-3"></p>
             </div>
         </div>
     </section>
@@ -473,8 +452,8 @@
     <section id="story" class="py-24 section-bg-light overflow-hidden">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="story_title">팔려고 만든 게 아닙니다.</h2>
-                <p class="text-xl text-gray-500 font-light" data-i18n="story_sub">쓰려고 만든 앱이라, 약속이 다릅니다.</p>
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="story_title">시작은 쓰려고 만든 앱!</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="story_sub">그래서 사용자 경험 개선에 진심입니다.</p>
             </div>
 
             <div class="minimal-card p-8 md:p-10 mb-6 reveal">
@@ -739,8 +718,8 @@
                 "f6_desc": "던지듯 적으세요. AI가 내용을 읽고 폴더와 카테고리를 정해 줍니다.",
                 "f7_title": "내 데이터는 내 PC에",
                 "f7_desc": "메모와 일정은 내 PC에만 저장됩니다. API 키도 Windows DPAPI로 로컬에만 보관됩니다.",
-                "story_title": "팔려고 만든 게 아닙니다.",
-                "story_sub": "쓰려고 만든 앱이라, 약속이 다릅니다.",
+                "story_title": "시작은 쓰려고 만든 앱!",
+                "story_sub": "그래서 사용자 경험 개선에 진심입니다.",
                 "story_dev_title": "개발자가 편하려고 직접 만든 앱",
                 "story_dev_desc": "매일 쓰는 사람이 직접 만듭니다.",
                 "story_update_title": "한 번 사면, 평생 업데이트",
@@ -878,8 +857,8 @@
                 "f6_desc": "Just dump it in. AI reads the content and assigns folders and categories.",
                 "f7_title": "Your data stays on your PC",
                 "f7_desc": "Memos and schedules live only on your PC. API keys are kept locally with Windows DPAPI.",
-                "story_title": "Not built to be sold.",
-                "story_sub": "Built to be used — so the promises differ.",
+                "story_title": "It started as an app built to be used!",
+                "story_sub": "So we take improving user experience seriously.",
                 "story_dev_title": "An app a developer built for his own comfort",
                 "story_dev_desc": "Made by someone who uses it every day.",
                 "story_update_title": "Buy once, updated for life",
@@ -1017,8 +996,8 @@
                 "f6_desc": "投げるように書いてください。AIが内容を読んでフォルダとカテゴリを決めます。",
                 "f7_title": "データは自分のPCに",
                 "f7_desc": "メモと予定は自分のPCにだけ保存されます。APIキーもWindows DPAPIでローカル保管です。",
-                "story_title": "売るために作ったのではありません。",
-                "story_sub": "使うために作ったので、約束が違います。",
+                "story_title": "使うために作り始めたアプリ!",
+                "story_sub": "だからユーザー体験の改善に本気です。",
                 "story_dev_title": "開発者が自分のために作ったアプリ",
                 "story_dev_desc": "毎日使う人が直接作ります。",
                 "story_update_title": "一度買えば、 평생アップデート",
@@ -1156,8 +1135,8 @@
                 "f6_desc": "随便丢进来就行,AI 会读内容定好文件夹和分类。",
                 "f7_title": "数据只在你的电脑里",
                 "f7_desc": "备忘和日程只存本机,API 密钥也只用 Windows DPAPI 本地保管。",
-                "story_title": "不是为了卖而做的。",
-                "story_sub": "为了用而做的,所以承诺不一样。",
+                "story_title": "起初就是为了用而做的应用!",
+                "story_sub": "所以我们对用户体验的改善是认真的。",
                 "story_dev_title": "开发者为图自己方便亲手做的应用",
                 "story_dev_desc": "每天用的人亲手打造。",
                 "story_update_title": "买一次,终身更新",
@@ -1238,52 +1217,6 @@
         // ===== 스토어 링크 연결 =====
         document.querySelectorAll("[data-store-link]").forEach(function (a) {
             a.href = STORE_URL;
-        });
-
-        // ===== 오버레이 모드별 시연 영상 =====
-        // 영상 파일이 videos/ 폴더에 들어오면 그대로 동작합니다.
-        // (파일이 아직 없으면 플레이스홀더가 유지됩니다.)
-        var OVERLAY_VIDEOS = {
-            "direct": "videos/overlay-direct.mp4",
-            "chat": "videos/overlay-chat.mp4",
-            "quick": "videos/overlay-quick.mp4"
-        };
-        function playOverlayVideo(mode, title) {
-            var v = document.getElementById("overlay-video");
-            var ph = document.getElementById("overlay-video-ph");
-            var cap = document.getElementById("overlay-video-cap");
-            var box = document.getElementById("overlay-demo");
-            if (!v || !OVERLAY_VIDEOS[mode]) return;
-            v.onerror = function () {
-                v.classList.add("hidden");
-                if (ph) ph.style.display = "flex";
-            };
-            try {
-                v.src = OVERLAY_VIDEOS[mode];
-                v.classList.remove("hidden");
-                if (ph) ph.style.display = "none";
-                if (cap) cap.textContent = title || "";
-                if (box && box.scrollIntoView) {
-                    box.scrollIntoView({ behavior: "smooth", block: "center" });
-                }
-                var pr = v.play();
-                if (pr && pr.catch) pr.catch(function () {});
-            } catch (e) {}
-        }
-        document.querySelectorAll("[data-overlay-video]").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-                var card = btn.closest(".minimal-card");
-                var title = "";
-                if (card) {
-                    var h3 = card.querySelector("h3");
-                    if (h3) title = h3.textContent;
-                }
-                document.querySelectorAll("[data-overlay-video]").forEach(function (b) {
-                    b.classList.remove("bg-gray-900", "text-white", "border-gray-900");
-                });
-                btn.classList.add("bg-gray-900", "text-white", "border-gray-900");
-                playOverlayVideo(btn.getAttribute("data-overlay-video"), title);
-            });
         });
 
         // ===== 동적 가격 표시 =====
