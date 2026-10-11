@@ -62,6 +62,10 @@
             padding: 24px;
         }
         .ph-img i { font-size: 28px; }
+        /* 이미지가 로드되면 플레이스홀더 장식을 숨김 (레터박스는 검정) */
+        .ph-img.has-img { border: none; background: #000; min-height: 0; padding: 0; }
+        .ph-img.has-img i, .ph-img.has-img span { display: none; }
+        .ph-img.has-img img { display: block; }
         /* 언어 선택 pill */
         .lang-pill {
             font-size: 12px;
@@ -242,9 +246,16 @@
                 <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="overlay_title">Injection Overlay : 상황에 맞는 세 가지 부름 방식</h2>
                 <p class="text-xl text-gray-500 font-light" data-i18n="overlay_sub">단축키로 신속하게.</p>
             </div>
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <div id="ov-carousel" class="max-w-4xl mx-auto reveal">
+                <div id="ov-tabs" class="flex flex-wrap justify-center gap-2 mb-6">
+                    <button data-ov-go="0" class="px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 transition">⚡ <span data-i18n="overlay_direct_title">바로입력</span></button>
+                    <button data-ov-go="1" class="px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 transition">💬 <span data-i18n="overlay_chat_title">대화창</span></button>
+                    <button data-ov-go="2" class="px-5 py-2 rounded-full text-sm font-semibold border border-gray-200 transition">🚀 <span data-i18n="overlay_quick_title">빠른실행</span></button>
+                </div>
+                <div id="ov-viewport" class="overflow-hidden rounded-[18px]">
+                    <div id="ov-track" class="flex transition-transform duration-700 ease-in-out">
                 <!-- Mode 1: 바로입력 -->
-                <div class="minimal-card p-8 reveal">
+                <div class="ov-slide minimal-card p-8" style="flex:0 0 100%">
                     <div class="text-3xl mb-3">⚡</div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_direct_title">바로입력</h3>
                     <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
@@ -252,14 +263,14 @@
                     </div>
                     <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_direct_when">텍스트 참조 없이, 지금 바로 입력할 때</p>
                     <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_direct_desc">선택한 텍스트가 없어도 됩니다. 떠오른 문장을 바로 받아쓰듯 입력하고, 결과는 커서 위치에 곧장 들어갑니다.</p>
-                    <div class="ph-img mb-2">
+                    <div class="ph-img mb-2 aspect-video overflow-hidden">
+                        <img src="images/overlay-direct.png" alt="바로입력" class="w-full h-full object-contain rounded-lg" style="display:none" onload="this.style.display='block';this.closest('.ph-img').classList.add('has-img')" onerror="this.remove()">
                         <i class="fas fa-image"></i>
                         <span data-i18n="ph_overlay_direct">스크린샷 자리: 바로입력 오버레이 (images/overlay-direct.png)</span>
-                        <!-- <img src="images/overlay-direct.png" alt="바로입력" class="w-full h-auto rounded-lg"> -->
                     </div>
                 </div>
                 <!-- Mode 2: 대화창 -->
-                <div class="minimal-card p-8 reveal">
+                <div class="ov-slide minimal-card p-8" style="flex:0 0 100%">
                     <div class="text-3xl mb-3">💬</div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_chat_title">대화창</h3>
                     <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
@@ -267,14 +278,14 @@
                     </div>
                     <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_chat_when">AI와 주고받으며 다듬어야 할 때</p>
                     <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_chat_desc">한 번으로 안 끝나는 일을 위한 창입니다. 물어보고, 고쳐달라 하고, 다시 물어보세요. 맥락은 이어집니다.</p>
-                    <div class="ph-img mb-2">
+                    <div class="ph-img mb-2 aspect-video overflow-hidden">
+                        <img src="images/overlay-chat.png" alt="대화창" class="w-full h-full object-contain rounded-lg" style="display:none" onload="this.style.display='block';this.closest('.ph-img').classList.add('has-img')" onerror="this.remove()">
                         <i class="fas fa-image"></i>
                         <span data-i18n="ph_overlay_chat">스크린샷 자리: 대화창 오버레이 (images/overlay-chat.png)</span>
-                        <!-- <img src="images/overlay-chat.png" alt="대화창" class="w-full h-auto rounded-lg"> -->
                     </div>
                 </div>
                 <!-- Mode 3: 빠른실행 -->
-                <div class="minimal-card p-8 reveal">
+                <div class="ov-slide minimal-card p-8" style="flex:0 0 100%">
                     <div class="text-3xl mb-3">🚀</div>
                     <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_quick_title">빠른실행</h3>
                     <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
@@ -282,11 +293,22 @@
                     </div>
                     <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_quick_when">선택한 텍스트로 정해진 일을 시킬 때</p>
                     <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_quick_desc">드래그한 텍스트를 재료 삼아 요약·번역·교정 같은 동작을 즉시 수행합니다. 질문을 타이핑할 필요가 없습니다.</p>
-                    <div class="ph-img mb-2">
+                    <div class="ph-img mb-2 aspect-video overflow-hidden">
+                        <img src="images/overlay-quick.png" alt="빠른실행" class="w-full h-full object-contain rounded-lg" style="display:none" onload="this.style.display='block';this.closest('.ph-img').classList.add('has-img')" onerror="this.remove()">
                         <i class="fas fa-image"></i>
                         <span data-i18n="ph_overlay_quick">스크린샷 자리: 빠른실행 오버레이 (images/overlay-quick.png)</span>
-                        <!-- <img src="images/overlay-quick.png" alt="빠른실행" class="w-full h-auto rounded-lg"> -->
                     </div>
+                </div>
+                    </div>
+                </div>
+                <div class="flex items-center justify-center gap-4 mt-6">
+                    <button id="ov-prev" aria-label="이전" class="w-10 h-10 rounded-full border border-gray-200 text-gray-600 font-bold hover:bg-gray-900 hover:text-white hover:border-gray-900 transition">‹</button>
+                    <div id="ov-dots" class="flex gap-2">
+                        <button data-ov-go="0" aria-label="1" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition"></button>
+                        <button data-ov-go="1" aria-label="2" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition"></button>
+                        <button data-ov-go="2" aria-label="3" class="w-2.5 h-2.5 rounded-full bg-gray-300 transition"></button>
+                    </div>
+                    <button id="ov-next" aria-label="다음" class="w-10 h-10 rounded-full border border-gray-200 text-gray-600 font-bold hover:bg-gray-900 hover:text-white hover:border-gray-900 transition">›</button>
                 </div>
             </div>
         </div>
@@ -543,23 +565,26 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-8 rounded-2xl reveal" style="background: #151a26; border: 1px solid #263049;">
                     <div class="text-3xl mb-3">🎟️</div>
-                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_gemini_title">Gemini 무료 티어로 충분합니다</h3>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_gemini_title">무료 티어로 충분합니다</h3>
                     <ul class="text-gray-400 text-sm space-y-2" style="list-style: none; padding: 0;">
-                        <li data-i18n="adv_gemini_1">✓ 결제 연결 전에는 무료 범위 내에서 과금 없음</li>
-                        <li data-i18n="adv_gemini_2">✓ 대화·RAG·화면 질문·STT가 같은 키 하나로 동작</li>
-                        <li data-i18n="adv_gemini_3">✓ 한도 초과 시 오류 안내가 뜨므로 모르고 결제될 걱정 없음</li>
-                        <li data-i18n="adv_gemini_4">✓ 사용량이 늘면 AI Studio 지출 상한 설정 권장</li>
+                        <li data-i18n="adv_gemini_1">✓ 개발한 사람도 무료티어만 씁니다.</li>
+                        <li data-i18n="adv_gemini_2">✓ 대화ㆍRAG검색ㆍ화면 캡쳐질문은 ollama gemma4:cloud</li>
+                        <li data-i18n="adv_gemini_3">✓ STT는 gemini api key 발급이 필요 합니다.(무료티어)</li>
+                        <li data-i18n="adv_gemini_4">✓ 기존 유료 API Key를 소지하신분은 유료로 쓰셔도 무방합니다.</li>
                     </ul>
                 </div>
                 <div class="p-8 rounded-2xl reveal" style="background: #151a26; border: 1px solid #263049;">
                     <div class="text-3xl mb-3">💻</div>
-                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_ollama_title">검증된 조합: Ollama 로컬 + Ollama 클라우드</h3>
-                    <p class="text-gray-400 text-sm mb-4" data-i18n="adv_ollama_desc">Ollama 하나면 두 가지가 다 됩니다. API 키 발급 없이 무료 범위 내에서 사용하세요.</p>
-                    <ul class="text-gray-400 text-sm space-y-2" style="list-style: none; padding: 0;">
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_ollama_title">ollama는 자동 설치</h3>
+                    <p class="text-gray-400 text-sm mb-4" data-i18n="adv_ollama_desc">처음 설치시 AI 사용 설정 마법사에 따라 자동설치가 될수도 있고 안될수도 있습니다.</p>
+                    <ul class="text-gray-400 text-sm space-y-2" style="list-style: none; padding: 0 0 0 14px; border-left: 2px solid #2b3548;">
                         <li><span data-i18n="adv_ollama_1">✓ 로컬 모델 — 인터넷 없이 동작, 데이터가 PC를 떠나지 않음</span></li>
                         <li><span data-i18n="adv_ollama_2">✓ 클라우드 모델 — Ollama 로그인만으로 무료 한도 내 사용, API 키 불필요</span></li>
                     </ul>
-                    <div class="rounded-xl p-4 font-mono text-sm mt-4" style="background: #000; color: #4ade80;">ollama pull gemma3<br>설정 → 서버 주소: http://localhost:11434</div>
+                    <div class="rounded-xl p-4 mt-4" style="background: #101524; border: 1px dashed #4a5a7a;">
+                        <p class="text-sm font-bold mb-1" style="color: #fbbf24;" data-i18n="adv_ollama_gemini_h">별도: Gemini API (위의 클라우드 모델과 다릅니다)</p>
+                        <p class="text-gray-400 text-sm" data-i18n="adv_ollama_gemini_d">Google에서 직접 발급받는 API 키 방식입니다. Ollama 로그인만으로 쓰는 클라우드 모델과 혼동하지 마세요.</p>
+                    </div>
                     <p class="text-gray-500 text-xs mt-4" data-i18n="adv_ollama_note">지원하는 연결: Ollama 로컬 모델 · Ollama 클라우드 모델 · Google Gemini API.</p>
                 </div>
             </div>
@@ -743,15 +768,17 @@
                 "pricing_foot": "Microsoft Store 전용 앱입니다. 가격은 접속 국가의 통화로 표시됩니다.",
                 "adv_title": "조금 어려운 이야기, 그래도 알아두세요",
                 "adv_sub": "비싼 API 요금 없이도 충분합니다. 검증된 무료 조합을 안내합니다.",
-                "adv_gemini_title": "Gemini 무료 티어로 충분합니다",
-                "adv_gemini_1": "✓ 결제 연결 전에는 무료 범위 내에서 과금 없음",
-                "adv_gemini_2": "✓ 대화·RAG·화면 질문·STT가 같은 키 하나로 동작",
-                "adv_gemini_3": "✓ 한도 초과 시 오류 안내가 뜨므로 모르고 결제될 걱정 없음",
-                "adv_gemini_4": "✓ 사용량이 늘면 AI Studio 지출 상한 설정 권장",
-                "adv_ollama_title": "검증된 조합: Ollama 로컬 + Ollama 클라우드",
-                "adv_ollama_desc": "Ollama 하나면 두 가지가 다 됩니다. API 키 발급 없이 무료 범위 내에서 사용하세요.",
+                "adv_gemini_title": "무료 티어로 충분합니다",
+                "adv_gemini_1": "✓ 개발한 사람도 무료티어만 씁니다.",
+                "adv_gemini_2": "✓ 대화ㆍRAG검색ㆍ화면 캡쳐질문은 ollama gemma4:cloud",
+                "adv_gemini_3": "✓ STT는 gemini api key 발급이 필요 합니다.(무료티어)",
+                "adv_gemini_4": "✓ 기존 유료 API Key를 소지하신분은 유료로 쓰셔도 무방합니다.",
+                "adv_ollama_title": "ollama는 자동 설치",
+                "adv_ollama_desc": "처음 설치시 AI 사용 설정 마법사에 따라 자동설치가 될수도 있고 안될수도 있습니다.",
                 "adv_ollama_1": "✓ 로컬 모델 — 인터넷 없이 동작, 데이터가 PC를 떠나지 않음",
                 "adv_ollama_2": "✓ 클라우드 모델 — Ollama 로그인만으로 무료 한도 내 사용, API 키 불필요",
+                "adv_ollama_gemini_h": "별도: Gemini API (위의 클라우드 모델과 다릅니다)",
+                "adv_ollama_gemini_d": "Google에서 직접 발급받는 API 키 방식입니다. Ollama 로그인만으로 쓰는 클라우드 모델과 혼동하지 마세요.",
                 "adv_ollama_note": "지원하는 연결: Ollama 로컬 모델 · Ollama 클라우드 모델 · Google Gemini API.",
                 "cta_title": "일하는 곳에서 바로 부르세요.",
                 "cta_sub": "개발자가 편하려고 직접 만든 앱, 직접 써보세요.",
@@ -882,15 +909,17 @@
                 "pricing_foot": "Microsoft Store exclusive. Prices show in your country's currency.",
                 "adv_title": "Slightly technical, but worth knowing",
                 "adv_sub": "No expensive API bills needed. Proven free setups below.",
-                "adv_gemini_title": "The Gemini free tier is enough",
-                "adv_gemini_1": "✓ No charges within the free tier before adding billing",
-                "adv_gemini_2": "✓ Chat, RAG, screenshot Q&A, and STT on a single key",
-                "adv_gemini_3": "✓ Over-limit errors surface visibly, so no surprise bills",
-                "adv_gemini_4": "✓ Set AI Studio spend caps as usage grows",
-                "adv_ollama_title": "Proven combo: Ollama local + Ollama cloud",
-                "adv_ollama_desc": "One Ollama install covers both. No API keys, within free limits.",
+                "adv_gemini_title": "The free tier is enough",
+                "adv_gemini_1": "✓ Even the developer only uses the free tier.",
+                "adv_gemini_2": "✓ Chat, RAG search, and screenshot Q&A run on ollama gemma4:cloud",
+                "adv_gemini_3": "✓ STT needs a gemini api key (free tier).",
+                "adv_gemini_4": "✓ Already have a paid API key? Feel free to use it as paid.",
+                "adv_ollama_title": "Ollama installs automatically",
+                "adv_ollama_desc": "On first install, the AI setup wizard may or may not install it automatically.",
                 "adv_ollama_1": "✓ Local models — work offline, data never leaves the PC",
                 "adv_ollama_2": "✓ Cloud models — free limits with just an Ollama login, no API key",
+                "adv_ollama_gemini_h": "Separate: Gemini API (different from the cloud models above)",
+                "adv_ollama_gemini_d": "An API-key method issued directly by Google. Not to be confused with Ollama cloud models that only need a login.",
                 "adv_ollama_note": "Supported connections: Ollama local · Ollama cloud · Google Gemini API.",
                 "cta_title": "Call it from where you work.",
                 "cta_sub": "Try the app a developer built for his own comfort.",
@@ -1021,15 +1050,17 @@
                 "pricing_foot": "Microsoft Store専用アプリです。価格はお住まいの国の通貨で表示されます。",
                 "adv_title": "少し難しい話ですが、知っておいてください",
                 "adv_sub": "高いAPI料金は要りません。検証済みの無料構成を案内します。",
-                "adv_gemini_title": "Gemini無料枠で十分です",
-                "adv_gemini_1": "✓ 課金連携前は無料範囲内で課金なし",
-                "adv_gemini_2": "✓ 会話・RAG・画面質問・STTが同じキーひとつで動作",
-                "adv_gemini_3": "✓ 上限超過はエラー表示されるので知らぬ間の課金なし",
-                "adv_gemini_4": "✓ 使用量が増えたらAI Studio支出上限の設定を推奨",
-                "adv_ollama_title": "検証済み構成: Ollamaローカル + Ollamaクラウド",
-                "adv_ollama_desc": "Ollamaひとつで両方いけます。APIキー発行なしで無料範囲内でどうぞ。",
+                "adv_gemini_title": "無料枠で十分です",
+                "adv_gemini_1": "✓ 開発者本人も無料枠だけ使っています。",
+                "adv_gemini_2": "✓ 会話・RAG検索・画面キャプチャ質問はollama gemma4:cloud",
+                "adv_gemini_3": "✓ STTはgemini api keyの発行が必要です。(無料枠)",
+                "adv_gemini_4": "✓ 有料APIキーをお持ちの方は有料で使っても構いません。",
+                "adv_ollama_title": "Ollamaは自動インストール",
+                "adv_ollama_desc": "初回インストール時のAI設定ウィザードにより、自動インストールされる場合とされない場合があります。",
                 "adv_ollama_1": "✓ ローカルモデル — ネットなしで動作、データはPCの外に出ない",
                 "adv_ollama_2": "✓ クラウドモデル — Ollamaログインだけで無料枠内利用、APIキー不要",
+                "adv_ollama_gemini_h": "別物: Gemini API (上のクラウドモデルとは違います)",
+                "adv_ollama_gemini_d": "Googleが直接発行するAPIキー方式です。ログインだけで使うOllamaクラウドモデルと混同しないでください。",
                 "adv_ollama_note": "対応接続: Ollamaローカル · Ollamaクラウド · Google Gemini API。",
                 "cta_title": "働く場所でそのまま呼んでください。",
                 "cta_sub": "開発者が自分のために作ったアプリ、使ってみてください。",
@@ -1160,15 +1191,17 @@
                 "pricing_foot": "Microsoft Store 独占应用,价格按所在国家货币显示。",
                 "adv_title": "有点难,但值得知道",
                 "adv_sub": "不需要昂贵的 API 账单,经验证的免费组合如下。",
-                "adv_gemini_title": "Gemini 免费档就够了",
-                "adv_gemini_1": "✓ 未绑卡前只在免费额度内,不会扣费",
-                "adv_gemini_2": "✓ 对话·RAG·截图问·STT 共用一把密钥",
-                "adv_gemini_3": "✓ 超限会明确报错,不怕被悄悄扣费",
-                "adv_gemini_4": "✓ 用量上来后建议设 AI Studio 支出上限",
-                "adv_ollama_title": "经验证组合: Ollama 本地 + Ollama 云",
-                "adv_ollama_desc": "装一个 Ollama 两种都行,免申请密钥,在免费额度内用。",
+                "adv_gemini_title": "免费档就够了",
+                "adv_gemini_1": "✓ 连开发者本人也只用免费档。",
+                "adv_gemini_2": "✓ 对话、RAG搜索、截图提问用ollama gemma4:cloud",
+                "adv_gemini_3": "✓ STT需要申请gemini api key。(免费档)",
+                "adv_gemini_4": "✓ 已有付费API密钥的可照常用付费版。",
+                "adv_ollama_title": "Ollama 自动安装",
+                "adv_ollama_desc": "首次安装时,根据AI设置向导的不同,可能会自动安装,也可能不会。",
                 "adv_ollama_1": "✓ 本地模型 — 离线运行,数据不出本机",
                 "adv_ollama_2": "✓ 云端模型 — 登录 Ollama 即享免费额度,免密钥",
+                "adv_ollama_gemini_h": "另算:Gemini API (和上面的云端模型不是一回事)",
+                "adv_ollama_gemini_d": "是由 Google 直接签发的 API 密钥方式,别和登录即用的 Ollama 云端模型搞混。",
                 "adv_ollama_note": "支持的连接: Ollama 本地 · Ollama 云 · Google Gemini API。",
                 "cta_title": "就在工作的地方叫它吧。",
                 "cta_sub": "开发者为自己做的应用,亲自试试看。",
@@ -1218,6 +1251,66 @@
         document.querySelectorAll("[data-store-link]").forEach(function (a) {
             a.href = STORE_URL;
         });
+
+        // ===== 오버레이 모드 캐러셀 (3초 자동재생, hover 시 일시정지) =====
+        (function () {
+            var track = document.getElementById("ov-track");
+            var box = document.getElementById("ov-carousel");
+            if (!track || !box) return;
+            var total = track.children.length;
+            var idx = 0, timer = null;
+            var reduced = false;
+            try {
+                reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            } catch (e) {}
+            function render() {
+                track.style.transform = "translateX(-" + (idx * 100) + "%)";
+                document.querySelectorAll("#ov-dots button").forEach(function (d, i) {
+                    d.classList.toggle("bg-gray-900", i === idx);
+                    d.classList.toggle("bg-gray-300", i !== idx);
+                });
+                document.querySelectorAll("#ov-tabs button").forEach(function (t, i) {
+                    var on = i === idx;
+                    t.classList.toggle("bg-gray-900", on);
+                    t.classList.toggle("text-white", on);
+                    t.classList.toggle("border-gray-900", on);
+                    t.classList.toggle("text-gray-600", !on);
+                });
+            }
+            function restart() {
+                if (timer) { clearInterval(timer); timer = null; }
+                if (!reduced) {
+                    timer = setInterval(function () {
+                        idx = (idx + 1) % total;
+                        render();
+                    }, 3000);
+                }
+            }
+            function go(n) {
+                idx = (n + total) % total;
+                render();
+                restart();
+            }
+            var prev = document.getElementById("ov-prev");
+            var next = document.getElementById("ov-next");
+            if (prev) prev.addEventListener("click", function () { go(idx - 1); });
+            if (next) next.addEventListener("click", function () { go(idx + 1); });
+            document.querySelectorAll("[data-ov-go]").forEach(function (b) {
+                b.addEventListener("click", function () {
+                    go(parseInt(b.getAttribute("data-ov-go"), 10) || 0);
+                });
+            });
+            box.addEventListener("mouseenter", function () {
+                if (timer) { clearInterval(timer); timer = null; }
+            });
+            box.addEventListener("mouseleave", restart);
+            box.addEventListener("focusin", function () {
+                if (timer) { clearInterval(timer); timer = null; }
+            });
+            box.addEventListener("focusout", restart);
+            render();
+            restart();
+        })();
 
         // ===== 동적 가격 표시 =====
         function detectRegion() {
