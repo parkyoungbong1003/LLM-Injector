@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LLM Injector - 커서 위치에서 바로 쓰는 전역 AI 비서</title>
-    <meta name="description" content="어떤 프로그램에서든 단축키 하나로 AI를 불러내 커서 위치에 바로 입력. 복사·붙여넣기 없는 전역 AI 비서. 첫 1개월 무료 체험, $9.99 영구 소장.">
-    <meta property="og:title" content="LLM Injector - 커서 위치에서 바로 쓰는 전역 AI 비서">
+    <title>LLM Injector - 개발자가 편하려고 직접 만든 전역 AI 비서</title>
+    <meta name="description" content="어떤 프로그램에서든 단축키 하나로 AI를 불러내 커서 위치에 바로 입력. 개발자가 편하려고 직접 만든 전역 AI 비서.">
+    <meta property="og:title" content="LLM Injector - 개발자가 편하려고 직접 만든 전역 AI 비서">
     <meta property="og:description" content="앱을 옮겨 다니지 마세요. AI가 커서로 찾아갑니다.">
     <meta property="og:type" content="website">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        /* Apple/Microsoft Minimalist Styles */
+        /* Apple/Microsoft Minimalist Styles (기존 정체성 유지) */
         @import url('https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap');
         body {
             font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -45,6 +45,82 @@
             background-color: #f8f9fa;
             border-left: 4px solid #007aff;
         }
+        /* 이미지 플레이스홀더: 사용자가 스크린샷을 넣을 자리 */
+        .ph-img {
+            border: 2px dashed #cbd5e1;
+            border-radius: 14px;
+            background: #f8fafc;
+            min-height: 220px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            color: #94a3b8;
+            font-size: 13px;
+            text-align: center;
+            padding: 24px;
+        }
+        .ph-img i { font-size: 28px; }
+        /* 언어 선택 pill */
+        .lang-pill {
+            font-size: 12px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 999px;
+            color: #6b7280;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .lang-pill:hover { color: #111827; }
+        .lang-pill.active {
+            color: #fff;
+            background: #111827;
+        }
+        /* Hero signature : dynamic slide rotator */
+        .rotator {
+            overflow: hidden;
+            min-height: 3.4rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #rot-text {
+            display: inline-block;
+            font-weight: 800;
+            font-size: clamp(1.5rem, 4.2vw, 2.4rem);
+            letter-spacing: -0.01em;
+            background: linear-gradient(135deg, #007aff, #5856d6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+            will-change: transform, opacity, filter;
+        }
+        #rot-text.in { animation: rot-in .6s cubic-bezier(.2, 1.3, .35, 1) forwards; }
+        #rot-text.out { animation: rot-out .45s ease-in forwards; }
+        @keyframes rot-in {
+            0% { opacity: 0; filter: blur(14px); transform: scale(1.04); }
+            55% { opacity: 1; filter: blur(0); }
+            100% { opacity: 1; filter: blur(0); transform: scale(1); }
+        }
+        @keyframes rot-out {
+            to { opacity: 0; filter: blur(8px); }
+        }
+        .hero-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
+        .hero-chip {
+            display: inline-flex; align-items: center; gap: 7px;
+            background: #f1f5f9; border: 1px solid rgba(0,0,0,0.06);
+            border-radius: 999px; padding: 8px 18px;
+            font-size: 14px; font-weight: 600; color: #1d1d1f;
+        }
+        /* 단축키 뱃지 */
+        .kbd {
+            display: inline-block; min-width: 1.7rem; text-align: center;
+            background: #f1f5f9; border: 1px solid #cbd5e1; border-bottom-width: 2px;
+            border-radius: 6px; padding: 2px 8px;
+            font-size: 12px; font-weight: 700; color: #334155; font-family: inherit;
+        }
         /* Story animations */
         .typing-caret { color: #4ade80; animation: blink 1s steps(1) infinite; }
         @keyframes blink { 50% { opacity: 0; } }
@@ -52,14 +128,13 @@
         .train { display: inline-flex; gap: 12px; white-space: nowrap; animation: train 14s linear infinite; padding: 0 12px; }
         .train-car { background: #ffffff; border: 1px solid rgba(0,0,0,0.06); border-radius: 999px; padding: 6px 16px; font-size: 13px; font-weight: 600; color: #1d1d1f; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
         @keyframes train { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-        .free-badge { display: inline-block; background: #dcfce7; color: #15803d; font-weight: 700; font-size: 13px; border-radius: 999px; padding: 6px 18px; animation: pop 2.4s ease-in-out infinite; }
-        @keyframes pop { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
-        .price-pulse { text-align: center; font-size: 30px; font-weight: 800; color: #1d1d1f; animation: pop 2.4s ease-in-out infinite; }
+        .free-badge { display: inline-block; background: #dcfce7; color: #15803d; font-weight: 700; font-size: 13px; border-radius: 999px; padding: 6px 18px; }
         .reveal { opacity: 0; transform: translateY(28px); transition: opacity .7s ease, transform .7s ease; }
         .reveal.visible { opacity: 1; transform: none; }
         @media (prefers-reduced-motion: reduce) {
-            .train, .free-badge, .price-pulse, .typing-caret { animation: none; }
+            .train, .typing-caret { animation: none; }
             .reveal { opacity: 1; transform: none; transition: none; }
+            #rot-text.in, #rot-text.out { animation: none; }
         }
     </style>
 </head>
@@ -73,13 +148,20 @@
                     <span class="font-semibold text-lg tracking-tight text-gray-900">⚡ LLM Injector</span>
                 </div>
                 <div class="hidden md:flex space-x-8 text-sm font-medium text-gray-500">
-                    <a href="#features" class="hover:text-gray-900 transition">기능</a>
-                    <a href="#requirements" class="hover:text-gray-900 transition">필독 사항</a>
-                    <a href="#pricing" class="hover:text-gray-900 transition">가격</a>
+                    <a href="#features" class="hover:text-gray-900 transition" data-i18n="nav_features">기능</a>
+                    <a href="#overlay" class="hover:text-gray-900 transition" data-i18n="nav_overlay">오버레이</a>
+                    <a href="#usecases" class="hover:text-gray-900 transition" data-i18n="nav_usecases">활용 예시</a>
+                    <a href="#pricing" class="hover:text-gray-900 transition" data-i18n="nav_pricing">가격</a>
                 </div>
-                <div class="flex items-center gap-4">
-                    <a href="#pricing" class="bg-black hover:bg-gray-800 text-white text-sm px-4 py-1.5 rounded-full font-medium transition shadow-sm">
-                        무료 체험하기
+                <div class="flex items-center gap-2">
+                    <div class="hidden sm:flex items-center gap-1 mr-1" role="group" aria-label="Language">
+                        <button class="lang-pill active" data-lang="ko">KO</button>
+                        <button class="lang-pill" data-lang="en">EN</button>
+                        <button class="lang-pill" data-lang="ja">JA</button>
+                        <button class="lang-pill" data-lang="zh">ZH</button>
+                    </div>
+                    <a data-store-link href="#" class="bg-black hover:bg-gray-800 text-white text-sm px-4 py-1.5 rounded-full font-medium transition shadow-sm" data-i18n="nav_cta">
+                        스토어에서 받기
                     </a>
                 </div>
             </div>
@@ -88,36 +170,37 @@
 
     <!-- Hero Section -->
     <section class="pt-32 pb-16 px-4 sm:px-6 lg:px-8 max-w-5xl mx-auto text-center">
-        <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 leading-tight">
-            앱을 옮겨 다니지 마세요. <br />
-            <span class="hero-gradient-text">AI가 커서로 찾아갑니다.</span>
+        <h1 class="text-5xl md:text-7xl font-bold mb-6 tracking-tight text-gray-900 leading-tight" data-i18n="hero_title">
+            내 지식은 알아서 관리하고, <br />
+            <span class="hero-gradient-text">글쓰기는 나 대신 해주는 AI</span>
         </h1>
-        <p class="text-xl md:text-2xl text-gray-500 mb-10 font-light max-w-2xl mx-auto leading-relaxed">
-            어떤 프로그램에서든 단축키 하나로 AI를 불러내세요.<br/>복사·붙여넣기 없이, 현재 작성 중인 문서에 바로 입력됩니다.
+        <p class="sr-only" data-i18n="hero_sub">개발자가 편하려고 직접 만든 전역 AI 비서</p>
+        <div class="rotator mt-[50px] mb-[50px]" aria-hidden="true"><span id="rot-text"></span></div>
+        <div class="hero-chips mb-8">
+            <span class="hero-chip">⚡ <span data-i18n="hero_chip1">어느 앱에서나</span></span>
+            <span class="hero-chip">🧠 <span data-i18n="hero_chip2">내 문서로 답함</span></span>
+            <span class="hero-chip">📝 <span data-i18n="hero_chip3">메모ㆍ일정관리ㆍ알람까지 한번에</span></span>
+            <span class="hero-chip">📥 <span data-i18n="hero_chip4">간편한 지식 저장</span></span>
+            <span class="hero-chip">💾 <span data-i18n="hero_chip5">저장한 지식으로 답함</span></span>
+        </div>
+        <p class="text-base text-gray-400 mb-10 max-w-2xl mx-auto" data-i18n="hero_desc">
+            어떤 프로그램에서든 단축키 하나로 AI를 불러내세요. 복사·붙여넣기 없이, 작성 중인 문서에 바로 입력됩니다.
         </p>
-        
+
         <div class="flex flex-col sm:flex-row justify-center items-center gap-4 mb-16">
-            <a href="#pricing" class="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-800 transition flex items-center justify-center gap-2 shadow-md">
+            <a data-store-link href="#" class="w-full sm:w-auto bg-black text-white px-8 py-4 rounded-full font-medium text-lg hover:bg-gray-800 transition flex items-center justify-center gap-2 shadow-md">
                 <i class="fab fa-windows text-lg"></i>
-                Microsoft Store 다운로드
+                <span data-i18n="hero_cta">Microsoft Store 다운로드</span>
             </a>
             <div class="text-sm text-gray-500 text-center sm:text-left">
-                <p class="font-semibold text-gray-900">$9.99 (영구 소장 / 구독 없음)</p>
-                <p>첫 1개월 전면 무료 체험</p>
+                <p class="font-semibold text-gray-900"><span data-price></span> <span data-i18n="hero_price_note">영구 소장 / 구독 없음</span></p>
+                <p data-i18n="hero_trial_note">첫 1개월 전 기능 무료 체험</p>
             </div>
         </div>
-        
-        <!-- Video Demo Placeholder -->
-        <div id="demo-video" class="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 bg-black aspect-video flex items-center justify-center group cursor-pointer mb-8">
-            <!-- 나중에 실제 동영상을 넣을 때 아래 코드를 사용하세요:
-            <video src="videos/demo.mp4" autoplay loop muted playsinline class="w-full h-full object-cover"></video>
-            -->
-            <div class="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 transition duration-300 group-hover:bg-gray-800">
-                <div class="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4 backdrop-blur-md border border-white/20 group-hover:scale-110 transition duration-300">
-                    <i class="fas fa-play text-white ml-2 text-3xl"></i>
-                </div>
-                <p class="text-white/70 font-medium text-sm tracking-wide">시연 동영상을 재생하려면 클릭하세요 (비디오 영역)</p>
-            </div>
+
+        <!-- Video Demo: YouTube 자동재생 (음소거 — 브라우저 자동재생 정책 대응) -->
+        <div id="demo-video" class="relative max-w-4xl mx-auto rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 bg-black aspect-video mb-8">
+            <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/26HqwR9YWDI?si=RQ-waShjDGibpYTA&autoplay=1&mute=1&loop=1&playlist=26HqwR9YWDI&rel=0&playsinline=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </section>
 
@@ -129,22 +212,22 @@
                     <i class="fas fa-exclamation"></i>
                 </div>
                 <div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">필독: 앱 사용을 위한 필수 준비사항</h3>
-                    <p class="text-gray-600 mb-5 text-sm leading-relaxed">
-                        LLM Injector는 사용자의 프라이버시와 선택의 자유를 위해 <strong>자체 AI 언어 모델(LLM)을 내장하고 있지 않은 클라이언트 전용 앱</strong>입니다. 앱을 정상적으로 사용하시려면 다음 중 하나의 설정이 <u>반드시</u> 필요합니다.
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="req_title">먼저 알아두세요: AI 연결이 필요합니다</h3>
+                    <p class="text-gray-600 mb-5 text-sm leading-relaxed" data-i18n="req_desc">
+                        LLM Injector는 AI 모델을 내장하지 않은 클라이언트 앱입니다. 아래 둘 중 하나를 준비해 주세요.
                     </p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                <i class="fas fa-laptop-code text-indigo-500"></i> 옵션 A: 로컬 AI 사용자
+                                <i class="fas fa-laptop-code text-indigo-500"></i> <span data-i18n="req_a_title">옵션 A: 로컬 AI</span>
                             </h4>
-                            <p class="text-sm text-gray-500 leading-relaxed">본인의 PC 사양에 맞는 로컬 모델 구동 프로그램(예: <b>Ollama</b>)을 직접 설치하고, 적절한 모델을 다운로드하여 앱 환경설정에 연동해야 합니다. (완전 무료/프라이버시 보장)</p>
+                            <p class="text-sm text-gray-500 leading-relaxed" data-i18n="req_a_desc">Ollama를 설치하고 모델을 받아 앱에 연동하세요. 무료이며 데이터가 PC를 떠나지 않습니다.</p>
                         </div>
                         <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm">
                             <h4 class="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                <i class="fas fa-cloud text-blue-500"></i> 옵션 B: 클라우드 AI 사용자
+                                <i class="fas fa-cloud text-blue-500"></i> <span data-i18n="req_b_title">옵션 B: 클라우드 AI</span>
                             </h4>
-                            <p class="text-sm text-gray-500 leading-relaxed">Google Gemini와 같은 강력한 클라우드 AI를 사용하시려면, 사용자가 직접 해당 서비스 플랫폼에서 <b>API KEY를 발급</b>받아 앱 환경설정에 등록해야 합니다.</p>
+                            <p class="text-sm text-gray-500 leading-relaxed" data-i18n="req_b_desc">Google Gemini 등의 API 키를 발급받아 앱 환경설정에 등록하세요.</p>
                         </div>
                     </div>
                 </div>
@@ -152,12 +235,236 @@
         </div>
     </section>
 
-    <!-- Visual Demo / Concept -->
-    <section class="max-w-5xl mx-auto px-4 mb-24">
-        <div class="relative rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-gray-100 bg-white">
-            <img src="screenshots/store_04_memo.png" alt="LLM Injector 동작 화면" class="w-full h-auto object-cover" onerror="this.closest('section').style.display='none'">
-            <div class="bg-gray-50 p-4 text-center text-sm text-gray-500 border-t border-gray-100">
-                옵시디언 스타일 메모장과 우측 AI 어시스턴트 패널. (개인 지식 RAG 및 웹 검색 모드 지원)
+    <!-- Injection Overlay : 3 modes -->
+    <section id="overlay" class="py-24 section-bg-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="overlay_title">Injection Overlay : 상황에 맞는 세 가지 부름 방식</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="overlay_sub">단축키로 신속하게.</p>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Mode 1: 바로입력 -->
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">⚡</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_direct_title">바로입력</h3>
+                    <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
+                        <span class="kbd">Ctrl</span><span class="text-gray-300 text-xs">+</span><span class="kbd">Alt</span><span class="text-gray-300 text-xs">+</span><span class="kbd">↓</span>
+                    </div>
+                    <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_direct_when">텍스트 참조 없이, 지금 바로 입력할 때</p>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_direct_desc">선택한 텍스트가 없어도 됩니다. 떠오른 문장을 바로 받아쓰듯 입력하고, 결과는 커서 위치에 곧장 들어갑니다.</p>
+                    <div class="ph-img mb-2">
+                        <i class="fas fa-image"></i>
+                        <span data-i18n="ph_overlay_direct">스크린샷 자리: 바로입력 오버레이 (images/overlay-direct.png)</span>
+                        <!-- <img src="images/overlay-direct.png" alt="바로입력" class="w-full h-auto rounded-lg"> -->
+                    </div>
+                    <button data-overlay-video="direct" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
+                    </button>
+                </div>
+                <!-- Mode 2: 대화창 -->
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">💬</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_chat_title">대화창</h3>
+                    <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
+                        <span class="kbd">Ctrl</span><span class="text-gray-300 text-xs">+</span><span class="kbd">Alt</span><span class="text-gray-300 text-xs">+</span><span class="kbd">←</span>
+                    </div>
+                    <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_chat_when">AI와 주고받으며 다듬어야 할 때</p>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_chat_desc">한 번으로 안 끝나는 일을 위한 창입니다. 물어보고, 고쳐달라 하고, 다시 물어보세요. 맥락은 이어집니다.</p>
+                    <div class="ph-img mb-2">
+                        <i class="fas fa-image"></i>
+                        <span data-i18n="ph_overlay_chat">스크린샷 자리: 대화창 오버레이 (images/overlay-chat.png)</span>
+                        <!-- <img src="images/overlay-chat.png" alt="대화창" class="w-full h-auto rounded-lg"> -->
+                    </div>
+                    <button data-overlay-video="chat" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
+                    </button>
+                </div>
+                <!-- Mode 3: 빠른실행 -->
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🚀</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="overlay_quick_title">빠른실행</h3>
+                    <div class="flex items-center gap-1.5 mb-3" aria-label="shortcut">
+                        <span class="kbd">Ctrl</span><span class="text-gray-300 text-xs">+</span><span class="kbd">Alt</span><span class="text-gray-300 text-xs">+</span><span class="kbd">↑</span>
+                    </div>
+                    <p class="text-sm font-medium text-blue-600 mb-3" data-i18n="overlay_quick_when">선택한 텍스트로 정해진 일을 시킬 때</p>
+                    <p class="text-gray-500 text-sm leading-relaxed mb-5" data-i18n="overlay_quick_desc">드래그한 텍스트를 재료 삼아 요약·번역·교정 같은 동작을 즉시 수행합니다. 질문을 타이핑할 필요가 없습니다.</p>
+                    <div class="ph-img mb-2">
+                        <i class="fas fa-image"></i>
+                        <span data-i18n="ph_overlay_quick">스크린샷 자리: 빠른실행 오버레이 (images/overlay-quick.png)</span>
+                        <!-- <img src="images/overlay-quick.png" alt="빠른실행" class="w-full h-auto rounded-lg"> -->
+                    </div>
+                    <button data-overlay-video="quick" class="mt-4 w-full border border-gray-200 rounded-full py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-900 hover:text-white hover:border-gray-900 transition flex items-center justify-center gap-2">
+                        <i class="fas fa-play text-xs"></i><span data-i18n="overlay_watch">시연 영상 보기</span>
+                    </button>
+                </div>
+            </div>
+            <!-- 모드별 시연 영상 플레이어 -->
+            <div id="overlay-demo" class="mt-12 reveal">
+                <div class="relative max-w-4xl mx-auto rounded-2xl overflow-hidden border border-gray-100 bg-black aspect-video shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
+                    <video id="overlay-video" class="w-full h-full object-cover hidden" controls playsinline preload="none"></video>
+                    <div id="overlay-video-ph" class="absolute inset-0 flex flex-col items-center justify-center gap-3 text-center p-6">
+                        <i class="fas fa-film text-3xl text-gray-600"></i>
+                        <p class="text-white/70 text-sm font-medium" data-i18n="overlay_video_ph">위 카드의 '시연 영상 보기'를 누르면 해당 모드 영상이 재생됩니다</p>
+                        <p class="text-white/40 text-xs">videos/overlay-direct.mp4 · videos/overlay-chat.mp4 · videos/overlay-quick.mp4</p>
+                    </div>
+                </div>
+                <p id="overlay-video-cap" class="text-center text-sm text-gray-500 mt-3"></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Commander grid -->
+    <section id="commander" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="commander_title">퀵 커맨더: 전부 여기서</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="commander_sub">앱의 모든 도구가 하나의 명령 팔레트에 모여 있습니다.</p>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-layer-group text-2xl text-blue-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_workspace">워크스페이스</h3><p class="text-xs text-gray-500" data-i18n="cmd_workspace_d">작업 공간 전환</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-note-sticky text-2xl text-amber-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_memo">메모</h3><p class="text-xs text-gray-500" data-i18n="cmd_memo_d">마크다운 메모 작성</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-database text-2xl text-purple-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_kb">지식 베이스</h3><p class="text-xs text-gray-500" data-i18n="cmd_kb_d">내 문서로 답하는 RAG</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-camera text-2xl text-orange-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_capture">화면 캡쳐 질문</h3><p class="text-xs text-gray-500" data-i18n="cmd_capture_d">드래그 캡처 후 질문</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-bell text-2xl text-rose-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_alarm">알람 목록 관리</h3><p class="text-xs text-gray-500" data-i18n="cmd_alarm_d">예약·리마인더 확인</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-cloud-arrow-up text-2xl text-sky-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_sync">클라우드 즉시 동기화</h3><p class="text-xs text-gray-500" data-i18n="cmd_sync_d">지금 바로 백업·동기화</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-gear text-2xl text-gray-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_settings">환경설정</h3><p class="text-xs text-gray-500" data-i18n="cmd_settings_d">모델·단축키·동기화</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-globe text-2xl text-teal-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_scrape">웹데이터 스크래핑</h3><p class="text-xs text-gray-500" data-i18n="cmd_scrape_d">페이지 내용 가져오기</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-microphone text-2xl text-red-400 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_stt">음성 통화 STT·요약</h3><p class="text-xs text-gray-500" data-i18n="cmd_stt_d">통화 받아쓰기와 요약</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-folder-tree text-2xl text-yellow-600 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_explorer">프로젝트 탐색기</h3><p class="text-xs text-gray-500" data-i18n="cmd_explorer_d">파일 구조 탐색·질문</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-file-lines text-2xl text-indigo-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_doc2md">문서 → MD 변환</h3><p class="text-xs text-gray-500" data-i18n="cmd_doc2md_d">PDF·문서를 마크다운으로</p></div>
+                <div class="minimal-card p-6 text-center reveal"><i class="fas fa-file-arrow-up text-2xl text-emerald-500 mb-3 block"></i><h3 class="font-semibold text-gray-900 text-sm mb-1" data-i18n="cmd_filesave">파일 지식 저장</h3><p class="text-xs text-gray-500" data-i18n="cmd_filesave_d">파일을 지식에 바로 저장</p></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use cases -->
+    <section id="usecases" class="py-24 section-bg-light">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="usecase_title">이렇게 씁니다</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="usecase_sub">거창한 말이 아니라, 매일 반복되는 일들입니다.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">✉️</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc1_title">메일 답장, 세 번 고쳐쓰지 않기</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc1_desc">받은 메일을 드래그하고 빠른실행으로 답장 초안을 받습니다. 말투만 손보면 끝. 메일함을 열었다 닫았다 하지 않습니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">📝</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc2_title">회의록에서 할 일 뽑아내기</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc2_desc">음성 통화 STT로 받아쓴 회의 내용을 요약해 실행 항목만 정리합니다. 정리된 건 메모에 그대로 쌓입니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🐞</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc3_title">에러 로그 붙들고 씨름 끝내기</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc3_desc">복사가 안 되는 콘솔 화면은 드래그 캡처로 질문합니다. 로그를 파일로 옮길 필요가 없습니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">📚</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc4_title">내 문서가 답하게 하기</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc4_desc">PDF·문서를 지식 베이스에 넣어두면 "지난주 회의록 기준으로 답장 써줘" 같은 질문에 내 자료로 답합니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🌍</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc5_title">해외 메일, 어색하지 않게</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc5_desc">쓴 영어 그대로 두지 말고 대화창에서 뉘앙스까지 다듬습니다. 번역기가 아니라 글쓰기 상대입니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🗂️</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="uc6_title">아무렇게나 적어도 정리됨</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="uc6_desc">생각나는 대로 던져 적으면 AI가 폴더와 카테고리를 정해줍니다. 메모 정리에 쓰는 시간이 사라집니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recommended for -->
+    <section id="foryou" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="foryou_title">이런 분들이 사용하면 좋습니다</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="foryou_sub">거창한 조건 없습니다. 매일 무언가를 쓰고 정리하는 분이면 됩니다.</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">👨‍💻</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy1_title">개발자 및 바이브 코더</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy1_desc">에러 화면은 캡처로 묻고, 낯선 코드는 프로젝트 탐색기로 훑고, 바뀐 건 메모에 쌓아두세요. 손이 많이 가는 일을 줄이는 용도입니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🏫</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy2_title">교육 종사자</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy2_desc">수업 자료 정리, 공지·가정통신문 초안, 채점 기준 메모까지. 반복되는 문서 작업에 시간을 덜 쓰고 수업에 더 쓰세요.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🎒</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy3_title">학생</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy3_desc">강의 받아쓰기와 요약, 리포트 초안, 시험 범위 정리에 씁니다. 정리된 건 그대로 내 지식으로 쌓입니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">💼</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy4_title">직장인</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy4_desc">메일 답장, 회의록 실행 항목, 보고서 초안까지. 쓰는 프로그램은 그대로 두고 커서 앞에서 끝내세요.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🔬</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy5_title">연구자</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy5_desc">논문 PDF를 지식에 넣어두고 선행연구를 묻고, 읽은 건 메모로 남기세요. 자료 찾으러 헤매는 시간이 줄어듭니다.</p>
+                </div>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🧑‍💼</div>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2" data-i18n="fy6_title">1인 기업·프리랜서</h3>
+                    <p class="text-gray-500 text-sm leading-relaxed" data-i18n="fy6_desc">제안서·견적·정산 메모부터 고객 응대 문구, 일정·알람까지. 직원 없이도 챙길 걸 챙기게 됩니다.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Features Section -->
+    <section id="features" class="py-24 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-20">
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="features_title">파일 안이 아니라, 일하는 모든 곳에서.</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="features_sub">매일 쓰는 도구가 되려고 만든 기능들입니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="minimal-card p-8">
+                    <i class="fas fa-bolt text-3xl text-blue-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f1_title">전역 AI 주입</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f1_desc">단축키 한 번으로 AI 메뉴를 호출하세요. 생성된 텍스트가 현재 활성화된 프로그램의 커서 위치에 바로 타이핑됩니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-brain text-3xl text-purple-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f2_title">개인 지식 기반 대답 (RAG)</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f2_desc">내 메모와 문서를 지식베이스로 씁니다. 내 자료에 근거한 답이 필요할 때 켜면 됩니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-sliders-h text-3xl text-teal-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f3_title">모델 선택의 자유</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f3_desc">인터넷 없이 쓰는 로컬 모드와 빠르고 똑똑한 클라우드 모드. 작업에 맞게 고르면 됩니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-crop-alt text-3xl text-orange-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f4_title">Vision 화면 캡처 질의</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f4_desc">에러 화면처럼 복사 안 되는 것도 드래그로 캡처해 바로 질문할 수 있습니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-book text-3xl text-rose-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f5_title">Markdown 메모 관리</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f5_desc">폴더·태그·표·수식을 지원하는 메모 에디터와 AI 어시스턴트가 한 화면에서 돕니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-wand-magic-sparkles text-3xl text-violet-500 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f6_title">아무렇게나 메모해도 AI가 정리</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f6_desc">던지듯 적으세요. AI가 내용을 읽고 폴더와 카테고리를 정해 줍니다.</p>
+                </div>
+                <div class="minimal-card p-8">
+                    <i class="fas fa-lock text-3xl text-gray-800 mb-6 block"></i>
+                    <h3 class="text-xl font-semibold mb-3 text-gray-900" data-i18n="f7_title">내 데이터는 내 PC에</h3>
+                    <p class="text-gray-500 leading-relaxed text-sm" data-i18n="f7_desc">메모와 일정은 내 PC에만 저장됩니다. API 키도 Windows DPAPI로 로컬에만 보관됩니다.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -166,29 +473,27 @@
     <section id="story" class="py-24 section-bg-light overflow-hidden">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
-                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900">팔려고 만든 게 아닙니다.</h2>
-                <p class="text-xl text-gray-500 font-light">쓰려고 만든 앱이라, 약속이 다릅니다.</p>
+                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900" data-i18n="story_title">팔려고 만든 게 아닙니다.</h2>
+                <p class="text-xl text-gray-500 font-light" data-i18n="story_sub">쓰려고 만든 앱이라, 약속이 다릅니다.</p>
             </div>
 
-            <!-- 1) 개발자가 편하려고 직접 만든 앱 : typing terminal -->
             <div class="minimal-card p-8 md:p-10 mb-6 reveal">
                 <div class="flex items-center gap-3 mb-5">
                     <span class="text-3xl">👨‍💻</span>
-                    <h3 class="text-2xl font-bold text-gray-900">개발자가 편하려고 직접 만든 앱</h3>
+                    <h3 class="text-2xl font-bold text-gray-900" data-i18n="story_dev_title">개발자가 편하려고 직접 만든 앱</h3>
                 </div>
                 <div class="bg-gray-900 rounded-xl p-5 font-mono text-sm md:text-base leading-relaxed" style="min-height: 120px;">
                     <span class="text-green-400">$</span>
                     <span id="typing-line" class="text-gray-100"></span><span class="typing-caret">▍</span>
                 </div>
-                <p class="text-gray-500 text-sm mt-4">매일 쓰는 사람이 직접 만듭니다.</p>
+                <p class="text-gray-500 text-sm mt-4" data-i18n="story_dev_desc">매일 쓰는 사람이 직접 만듭니다.</p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- 2) 한번 구매로 평생 업데이트 : version train marquee -->
                 <div class="minimal-card p-8 reveal">
                     <div class="text-3xl mb-3">♾️</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">한 번 사면, 평생 업데이트</h3>
-                    <p class="text-gray-500 text-sm mb-5">추가 결제 없이 새 기능이 계속 도착합니다.</p>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="story_update_title">한 번 사면, 평생 업데이트</h3>
+                    <p class="text-gray-500 text-sm mb-5" data-i18n="story_update_desc">추가 결제 없이 새 기능이 계속 도착합니다.</p>
                     <div class="train-track">
                         <div class="train">
                             <span class="train-car">v1.0 출시 🚀</span>
@@ -201,76 +506,14 @@
                             <span class="train-car">v2.0 ??? 🔜</span>
                         </div>
                     </div>
-                    <div class="text-center mt-4"><span class="free-badge">추가 요금 $0</span></div>
+                    <div class="text-center mt-4"><span class="free-badge" data-i18n="story_update_badge">추가 요금 $0</span></div>
                 </div>
 
-                <!-- 3) 지금만 이 가격 -->
-                <div class="minimal-card p-8 reveal" style="border: 2px solid #007aff;">
-                    <div class="text-3xl mb-3">⏰</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">출시 기념 특가, 지금만 이 가격</h3>
-                    <p class="text-gray-500 text-sm mb-4">정가 인상 전 마지막 기회입니다.</p>
-                    <div class="price-pulse">$9.99 <span class="text-sm text-gray-400 font-normal">→ 이후 인상 예정</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Main Features Section -->
-    <section id="features" class="py-24 section-bg-light">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-20">
-                <h2 class="text-4xl font-bold mb-4 tracking-tight text-gray-900">파일 안이 아니라, 일하는 모든 곳에서.</h2>
-                <p class="text-xl text-gray-500 font-light">나만의 지식을 바탕으로 문서를 대량 생산하는 프로슈머를 위한 도구입니다.</p>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Feature 1 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-bolt text-3xl text-blue-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">전역 AI 주입</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">단축키 한 번으로 AI 메뉴를 호출하세요. 생성된 텍스트가 현재 활성화된 프로그램(Word, 메일, 에디터 등)의 커서 위치에 바로 타이핑됩니다.</p>
-                </div>
-
-                <!-- Feature 2: RAG -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-brain text-3xl text-purple-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">개인 지식 기반 대답 (RAG)</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">내가 작성한 메모와 문서를 지식베이스로 구축합니다. <i>"지난주 회의록을 바탕으로 답장 써줘"</i> 같은 초개인화된 문서 작성이 가능해집니다.</p>
-                </div>
-
-                <!-- Feature 3 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-sliders-h text-3xl text-teal-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">모델 선택의 자유</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">인터넷 없이 보안을 철저히 지키는 <b>로컬 모드</b>와 빠르고 똑똑한 <b>클라우드 모드</b> 중 작업 환경에 맞게 자유롭게 선택하고 전환하세요.</p>
-                </div>
-
-                <!-- Feature 4 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-crop-alt text-3xl text-orange-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">Vision 화면 캡처 질의</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">에러 코드나 복사 불가능한 이미지를 마우스로 드래그하여 즉시 캡처하고, OCR 텍스트 추출이나 시각적 질문을 던질 수 있습니다.</p>
-                </div>
-
-                <!-- Feature 5 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-book text-3xl text-rose-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">Markdown 메모 관리</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">폴더, 태그, 표, 수식을 지원하는 강력한 마크다운 에디터와 AI 어시스턴트 창이 하나의 화면에서 완벽하게 작동합니다.</p>
-                </div>
-
-                <!-- Feature 6 : AI 자동 분류 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-wand-magic-sparkles text-3xl text-violet-500 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">아무렇게나 메모해도 AI가 정리</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">정리할 필요 없이 던지듯 적으세요. AI가 내용을 읽고 폴더와 카테고리를 알아서 분류해 줍니다.</p>
-                </div>
-                
-                <!-- Feature 7 -->
-                <div class="minimal-card p-8">
-                    <i class="fas fa-lock text-3xl text-gray-800 mb-6 block"></i>
-                    <h3 class="text-xl font-semibold mb-3 text-gray-900">내 데이터는 내 PC에</h3>
-                    <p class="text-gray-500 leading-relaxed text-sm">모든 메모와 일정은 오직 내 PC에만 저장됩니다. 발급받은 API 키 또한 Windows DPAPI 암호화 기술로 로컬에만 안전하게 보관됩니다.</p>
+                <div class="minimal-card p-8 reveal">
+                    <div class="text-3xl mb-3">🛠️</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="story_fix_title">쓰는 사람이 계속 손봅니다</h3>
+                    <p class="text-gray-500 text-sm mb-4" data-i18n="story_fix_desc">매일 직접 쓰면서 고치는 앱이라, 불편한 점이 오래 방치되지 않습니다. 문의 메일도 개발자가 직접 봅니다.</p>
+                    <div class="text-center mt-4"><span class="free-badge" data-i18n="story_fix_badge">직접 유지보수 중</span></div>
                 </div>
             </div>
         </div>
@@ -279,35 +522,35 @@
     <!-- Pricing Section -->
     <section id="pricing" class="py-32 bg-white">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h2 class="text-4xl font-bold mb-6 tracking-tight text-gray-900">가격 — 구독 없음</h2>
-            <p class="text-xl text-gray-500 mb-16 font-light">한 번 사면 영원히 내 것입니다.</p>
+            <h2 class="text-4xl font-bold mb-6 tracking-tight text-gray-900" data-i18n="pricing_title">가격 — 구독 없음</h2>
+            <p class="text-xl text-gray-500 mb-16 font-light" data-i18n="pricing_sub">한 번 사면 영원히 내 것입니다.</p>
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 <div class="minimal-card p-10 text-center">
                     <div class="text-5xl mb-4">🎁</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">무료 체험</h3>
-                    <div class="text-5xl font-bold text-gray-900 mb-6 tracking-tighter">$0</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="pricing_trial_title">무료 체험</h3>
+                    <div class="text-5xl font-bold text-gray-900 mb-6 tracking-tighter"><span data-price-zero></span></div>
                     <ul class="text-left text-gray-500 text-sm space-y-2 inline-block">
-                        <li>• 1개월 전 기능 사용</li>
-                        <li>• 신용카드 등록 불필요</li>
+                        <li data-i18n="pricing_trial_1">• 1개월 전 기능 사용</li>
+                        <li data-i18n="pricing_trial_2">• 신용카드 등록 불필요</li>
                     </ul>
                 </div>
                 <div class="minimal-card p-10 text-center" style="border: 2px solid #007aff;">
                     <div class="text-5xl mb-4">💎</div>
-                    <h3 class="text-xl font-bold text-gray-900 mb-2">영구 소장</h3>
-                    <div class="text-5xl font-bold text-gray-900 mb-1 tracking-tighter">$9.99 <span class="text-base font-medium text-gray-400">일회성</span></div>
-                    <div class="text-sm text-gray-500 mb-6">첫 1개월은 카드 등록 없이 전 기능 무료 체험</div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2" data-i18n="pricing_full_title">영구 소장</h3>
+                    <div class="text-5xl font-bold text-gray-900 mb-1 tracking-tighter"><span data-price></span> <span class="text-base font-medium text-gray-400" data-i18n="pricing_once">일회성</span></div>
+                    <div class="text-sm text-gray-500 mb-6" data-i18n="pricing_full_note">첫 1개월은 카드 등록 없이 전 기능 무료 체험</div>
                     <ul class="text-left text-gray-700 text-sm space-y-2 inline-block font-medium">
-                        <li>• 모든 기능 무제한</li>
-                        <li>• 로컬 / 클라우드 연동 무제한</li>
-                        <li>• Microsoft Store 자동 업데이트 지원</li>
+                        <li data-i18n="pricing_full_1">• 모든 기능 무제한</li>
+                        <li data-i18n="pricing_full_2">• 로컬 / 클라우드 연동 무제한</li>
+                        <li data-i18n="pricing_full_3">• Microsoft Store 자동 업데이트 지원</li>
                     </ul>
-                    <a href="#" class="block w-full bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition shadow-md mt-8">
-                        1개월 무료 체험
+                    <a data-store-link href="#" class="block w-full bg-black text-white px-8 py-4 rounded-full font-medium hover:bg-gray-800 transition shadow-md mt-8" data-i18n="pricing_cta">
+                        Microsoft Store에서 받기
                     </a>
                 </div>
             </div>
-            <p class="text-xs text-gray-400 mt-8">Microsoft Store 전용 앱입니다.</p>
+            <p class="text-xs text-gray-400 mt-8" data-i18n="pricing_foot">Microsoft Store 전용 앱입니다. 가격은 접속 국가의 통화로 표시됩니다.</p>
         </div>
     </section>
 
@@ -315,49 +558,820 @@
     <section id="advanced" class="py-24" style="background: #0b0e14;">
         <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-14 reveal">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-white">조금 어려운 이야기, 그래도 알아두세요</h2>
-                <p class="text-lg text-gray-400 font-light">비싼 API 요금 없이도 충분합니다. 검증된 무료 조합을 안내합니다.</p>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-white" data-i18n="adv_title">조금 어려운 이야기, 그래도 알아두세요</h2>
+                <p class="text-lg text-gray-400 font-light" data-i18n="adv_sub">비싼 API 요금 없이도 충분합니다. 검증된 무료 조합을 안내합니다.</p>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="p-8 rounded-2xl reveal" style="background: #151a26; border: 1px solid #263049;">
                     <div class="text-3xl mb-3">🎟️</div>
-                    <h3 class="text-xl font-bold text-white mb-3">Gemini 무료 티어로 충분합니다</h3>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_gemini_title">Gemini 무료 티어로 충분합니다</h3>
                     <ul class="text-gray-400 text-sm space-y-2" style="list-style: none; padding: 0;">
-                        <li>✓ 결제 연결 전에는 무료 범위 내에서 과금 없음</li>
-                        <li>✓ 대화·RAG·화면 질문·STT가 같은 키 하나로 동작</li>
-                        <li>✓ 한도 초과 시 오류 안내가 뜨므로 모르고 결제될 걱정 없음</li>
-                        <li>✓ 사용량이 늘면 AI Studio 지출 상한(Spend Caps) 설정 권장</li>
+                        <li data-i18n="adv_gemini_1">✓ 결제 연결 전에는 무료 범위 내에서 과금 없음</li>
+                        <li data-i18n="adv_gemini_2">✓ 대화·RAG·화면 질문·STT가 같은 키 하나로 동작</li>
+                        <li data-i18n="adv_gemini_3">✓ 한도 초과 시 오류 안내가 뜨므로 모르고 결제될 걱정 없음</li>
+                        <li data-i18n="adv_gemini_4">✓ 사용량이 늘면 AI Studio 지출 상한 설정 권장</li>
                     </ul>
                 </div>
                 <div class="p-8 rounded-2xl reveal" style="background: #151a26; border: 1px solid #263049;">
                     <div class="text-3xl mb-3">💻</div>
-                    <h3 class="text-xl font-bold text-white mb-3">검증된 조합: Ollama 로컬 + Ollama 클라우드</h3>
-                    <p class="text-gray-400 text-sm mb-4">Ollama 하나면 두 가지가 다 됩니다. API 키 발급 없이 무료 범위 내에서 사용하세요.</p>
+                    <h3 class="text-xl font-bold text-white mb-3" data-i18n="adv_ollama_title">검증된 조합: Ollama 로컬 + Ollama 클라우드</h3>
+                    <p class="text-gray-400 text-sm mb-4" data-i18n="adv_ollama_desc">Ollama 하나면 두 가지가 다 됩니다. API 키 발급 없이 무료 범위 내에서 사용하세요.</p>
                     <ul class="text-gray-400 text-sm space-y-2" style="list-style: none; padding: 0;">
-                        <li>✓ <strong class="text-white">로컬 모델</strong> — 인터넷 없이 동작, 데이터가 PC를 떠나지 않음</li>
-                        <li>✓ <strong class="text-white">클라우드 모델</strong> (`-cloud` 이름) — Ollama 로그인만으로 무료 한도 내 사용, API 키 불필요</li>
+                        <li><span data-i18n="adv_ollama_1">✓ 로컬 모델 — 인터넷 없이 동작, 데이터가 PC를 떠나지 않음</span></li>
+                        <li><span data-i18n="adv_ollama_2">✓ 클라우드 모델 — Ollama 로그인만으로 무료 한도 내 사용, API 키 불필요</span></li>
                     </ul>
                     <div class="rounded-xl p-4 font-mono text-sm mt-4" style="background: #000; color: #4ade80;">ollama pull gemma3<br>설정 → 서버 주소: http://localhost:11434</div>
-                    <p class="text-gray-500 text-xs mt-4">지원하는 연결: Ollama 로컬 모델 · Ollama 클라우드 모델 · Google Gemini API. LM Studio·llama.cpp 등 OpenAI 호환 서버는 지원하지 않습니다.</p>
+                    <p class="text-gray-500 text-xs mt-4" data-i18n="adv_ollama_note">지원하는 연결: Ollama 로컬 모델 · Ollama 클라우드 모델 · Google Gemini API.</p>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Final CTA -->
+    <section class="py-24 text-center px-4">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="text-3xl md:text-4xl font-bold tracking-tight text-gray-900 mb-4" data-i18n="cta_title">일하는 곳에서 바로 부르세요.</h2>
+            <p class="text-gray-500 mb-8" data-i18n="cta_sub">개발자가 편하려고 직접 만든 앱, 직접 써보세요.</p>
+            <a data-store-link href="#" class="inline-flex items-center gap-2 bg-black text-white px-10 py-4 rounded-full font-medium text-lg hover:bg-gray-800 transition shadow-md">
+                <i class="fab fa-windows text-lg"></i>
+                <span data-i18n="hero_cta">Microsoft Store 다운로드</span>
+            </a>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer class="bg-white py-12 border-t border-gray-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center text-sm gap-4">
             <div class="text-gray-500 mb-4 md:mb-0">
-                <span class="font-semibold text-gray-900 mr-2">LLM Injector Lab</span> 
+                <span class="font-semibold text-gray-900 mr-2">LLM Injector Lab</span>
                 © 2026 All rights reserved.
             </div>
-            <div class="flex gap-6 text-gray-500">
-                <a href="https://parkyoungbong1003.github.io/LLM-Injector/privacy-policy.html" target="_blank" class="hover:text-gray-900 transition font-medium">개인정보처리방침</a>
-                <a href="mailto:yb9630@gmail.com" class="hover:text-gray-900 transition font-medium">지원 문의 (yb9630@gmail.com)</a>
+            <div class="flex items-center gap-4">
+                <select id="lang-select" class="text-sm border border-gray-200 rounded-full px-3 py-1.5 text-gray-600 bg-white" aria-label="Language">
+                    <option value="ko">한국어</option>
+                    <option value="en">English</option>
+                    <option value="ja">日本語</option>
+                    <option value="zh">中文</option>
+                </select>
+                <a href="https://parkyoungbong1003.github.io/LLM-Injector/privacy-policy.html" target="_blank" class="hover:text-gray-900 transition font-medium text-gray-500" data-i18n="footer_privacy">개인정보처리방침</a>
+                <a href="mailto:yb9630@gmail.com" class="hover:text-gray-900 transition font-medium text-gray-500" data-i18n="footer_support">지원 문의</a>
             </div>
         </div>
     </footer>
     <script>
+        // ===== 설정: 실제 값으로 교체하세요 =====
+        // Microsoft Store 실제 제품 링크 (예: https://apps.microsoft.com/detail/9NXXXXXXX)
+        var STORE_URL = "https://apps.microsoft.com/detail/9P71Z30MTBLK?hl=ko-kr&gl=KR&ocid=pdpshare";
+        // 스토어 가격 실시간 연동용 엔드포인트. 비워두면 아래 기본 가격표 사용.
+        // (MS Store에는 웹에서 직접 읽는 공개 가격 API가 없으므로,
+        //  실시간 반영이 필요하면 가격 제공용 자체 엔드포인트를 연결하세요.)
+        var STORE_PRICING_ENDPOINT = "";
+        // 국가별 기본 가격표 (통화, 금액) — 스토어 책정가에 맞춰 수정하세요.
+        var PRICE_TABLE = {
+            "KR": { currency: "KRW", amount: 12400 },
+            "US": { currency: "USD", amount: 9.99 },
+            "JP": { currency: "JPY", amount: 1490 },
+            "CN": { currency: "CNY", amount: 69 },
+            "GB": { currency: "GBP", amount: 7.99 },
+            "DE": { currency: "EUR", amount: 9.99 },
+            "FR": { currency: "EUR", amount: 9.99 },
+            "DEFAULT": { currency: "USD", amount: 9.99 }
+        };
+
+        // ===== i18n (ko/en/ja/zh) =====
+        var I18N = {
+            "ko": {
+                "meta_title": "LLM Injector - 개발자가 편하려고 직접 만든 전역 AI 비서",
+                "nav_features": "기능", "nav_overlay": "오버레이", "nav_usecases": "활용 예시", "nav_pricing": "가격",
+                "nav_cta": "스토어에서 받기",
+                "hero_title": '내 지식은 알아서 관리하고, <br /><span class="hero-gradient-text">글쓰기는 나 대신 해주는 AI</span>',
+                "hero_sub": "개발자가 편하려고 직접 만든 전역 AI 비서",
+                "rot1": "개발자가 편하려고 직접 만든 전역 AI 비서",
+                "rot2": "개발자도 지금 사용중인 앱",
+                "rot3": "진짜 쓰려고 만든 앱",
+                "hero_chip1": "어느 앱에서나",
+                "hero_chip2": "내 문서로 답함",
+                "hero_chip3": "메모ㆍ일정관리ㆍ알람까지 한번에",
+                "hero_chip4": "간편한 지식 저장",
+                "hero_chip5": "저장한 지식으로 답함",
+                "hero_desc": "어떤 프로그램에서든 단축키 하나로 AI를 불러내세요.<br>복사·붙여넣기 없이, 작성 중인 문서에 바로 입력됩니다.",
+                "hero_cta": "Microsoft Store 다운로드",
+                "hero_price_note": "영구 소장 / 구독 없음",
+                "hero_trial_note": "첫 1개월 전 기능 무료 체험",
+                "hero_video_ph": "시연 동영상 자리 (videos/demo.mp4 연결 예정)",
+                "req_title": "먼저 알아두세요: AI 연결이 필요합니다",
+                "req_desc": "LLM Injector는 AI 모델을 내장하지 않은 클라이언트 앱입니다. 아래 둘 중 하나를 준비해 주세요.",
+                "req_a_title": "옵션 A: 로컬 AI",
+                "req_a_desc": "Ollama를 설치하고 모델을 받아 앱에 연동하세요. 무료이며 데이터가 PC를 떠나지 않습니다.",
+                "req_b_title": "옵션 B: 클라우드 AI",
+                "req_b_desc": "Google Gemini 등의 API 키를 발급받아 앱 환경설정에 등록하세요.",
+                "overlay_title": "Injection Overlay : 상황에 맞는 세 가지 부름 방식",
+                "overlay_sub": "단축키로 신속하게.",
+                "overlay_direct_title": "바로입력",
+                "overlay_direct_when": "텍스트 참조 없이, 지금 바로 입력할 때",
+                "overlay_direct_desc": "선택한 텍스트가 없어도 됩니다. 떠오른 문장을 바로 받아쓰듯 입력하고, 결과는 커서 위치에 곧장 들어갑니다.",
+                "overlay_chat_title": "대화창",
+                "overlay_chat_when": "AI와 주고받으며 다듬어야 할 때",
+                "overlay_chat_desc": "한 번으로 안 끝나는 일을 위한 창입니다. 물어보고, 고쳐달라 하고, 다시 물어보세요. 맥락은 이어집니다.",
+                "overlay_quick_title": "빠른실행",
+                "overlay_quick_when": "선택한 텍스트로 정해진 일을 시킬 때",
+                "overlay_quick_desc": "드래그한 텍스트를 재료 삼아 요약·번역·교정 같은 동작을 즉시 수행합니다. 질문을 타이핑할 필요가 없습니다.",
+                "ph_overlay_direct": "스크린샷 자리: 바로입력 오버레이 (images/overlay-direct.png)",
+                "ph_overlay_chat": "스크린샷 자리: 대화창 오버레이 (images/overlay-chat.png)",
+                "ph_overlay_quick": "스크린샷 자리: 빠른실행 오버레이 (images/overlay-quick.png)",
+                "overlay_watch": "시연 영상 보기",
+                "overlay_video_ph": "위 카드의 '시연 영상 보기'를 누르면 해당 모드 영상이 재생됩니다",
+                "commander_title": "퀵 커맨더: 전부 여기서",
+                "commander_sub": "앱의 모든 도구가 하나의 명령 팔레트에 모여 있습니다.",
+                "cmd_workspace": "워크스페이스", "cmd_workspace_d": "작업 공간 전환",
+                "cmd_memo": "메모", "cmd_memo_d": "마크다운 메모 작성",
+                "cmd_kb": "지식 베이스", "cmd_kb_d": "내 문서로 답하는 RAG",
+                "cmd_capture": "화면 캡쳐 질문", "cmd_capture_d": "드래그 캡처 후 질문",
+                "cmd_alarm": "알람 목록 관리", "cmd_alarm_d": "예약·리마인더 확인",
+                "cmd_sync": "클라우드 즉시 동기화", "cmd_sync_d": "지금 바로 백업·동기화",
+                "cmd_settings": "환경설정", "cmd_settings_d": "모델·단축키·동기화",
+                "cmd_scrape": "웹데이터 스크래핑", "cmd_scrape_d": "페이지 내용 가져오기",
+                "cmd_stt": "음성 통화 STT·요약", "cmd_stt_d": "통화 받아쓰기와 요약<br>(Gemini API 키 필요·무료 티어)",
+                "cmd_explorer": "프로젝트 탐색기", "cmd_explorer_d": "파일 구조 탐색·질문",
+                "cmd_doc2md": "문서 → MD 변환", "cmd_doc2md_d": "PDF·문서를 마크다운으로",
+                "cmd_filesave": "파일 지식 저장", "cmd_filesave_d": "파일을 지식에 바로 저장",
+                "usecase_title": "이렇게 씁니다",
+                "usecase_sub": "거창한 말이 아니라, 매일 반복되는 일들입니다.",
+                "uc1_title": "메일 답장, 세 번 고쳐쓰지 않기",
+                "uc1_desc": "받은 메일을 드래그하고 빠른실행으로 답장 초안을 받습니다. 말투만 손보면 끝. 메일함을 열었다 닫았다 하지 않습니다.",
+                "uc2_title": "회의록에서 할 일 뽑아내기",
+                "uc2_desc": "음성 통화 STT로 받아쓴 회의 내용을 요약해 실행 항목만 정리합니다. 정리된 건 메모에 그대로 쌓입니다.",
+                "uc3_title": "에러 로그 붙들고 씨름 끝내기",
+                "uc3_desc": "복사가 안 되는 콘솔 화면은 드래그 캡처로 질문합니다. 로그를 파일로 옮길 필요가 없습니다.",
+                "uc4_title": "내 문서가 답하게 하기",
+                "uc4_desc": "PDF·문서를 지식 베이스에 넣어두면 내 자료로 답합니다. 전에 쓴 기록을 다시 찾는 수고가 줄어듭니다.",
+                "uc5_title": "해외 메일, 어색하지 않게",
+                "uc5_desc": "쓴 영어 그대로 두지 말고 대화창에서 뉘앙스까지 다듬습니다. 번역기가 아니라 글쓰기 상대입니다.",
+                "uc6_title": "아무렇게나 적어도 정리됨",
+                "uc6_desc": "생각나는 대로 던져 적으면 AI가 폴더와 카테고리를 정해줍니다. 메모 정리에 쓰는 시간이 사라집니다.",
+                "features_title": "파일 안이 아니라, 일하는 모든 곳에서.",
+                "features_sub": "매일 쓰는 도구가 되려고 만든 기능들입니다.",
+                "foryou_title": "이런 분들이 사용하면 좋습니다",
+                "foryou_sub": "거창한 조건 없습니다. 매일 무언가를 쓰고 정리하는 분이면 됩니다.",
+                "fy1_title": "개발자 및 바이브 코더",
+                "fy1_desc": "에러 화면은 캡처로 묻고, 낯선 코드는 프로젝트 탐색기로 훑고, 바뀐 건 메모에 쌓아두세요. 손이 많이 가는 일을 줄이는 용도입니다.",
+                "fy2_title": "교육 종사자",
+                "fy2_desc": "수업 자료 정리, 공지·가정통신문 초안, 채점 기준 메모까지. 반복되는 문서 작업에 시간을 덜 쓰고 수업에 더 쓰세요.",
+                "fy3_title": "학생",
+                "fy3_desc": "강의 받아쓰기와 요약, 리포트 초안, 시험 범위 정리에 씁니다. 정리된 건 그대로 내 지식으로 쌓입니다.",
+                "fy4_title": "직장인",
+                "fy4_desc": "메일 답장, 회의록 실행 항목, 보고서 초안까지. 쓰는 프로그램은 그대로 두고 커서 앞에서 끝내세요.",
+                "fy5_title": "연구자",
+                "fy5_desc": "논문 PDF를 지식에 넣어두고 선행연구를 묻고, 읽은 건 메모로 남기세요. 자료 찾으러 헤매는 시간이 줄어듭니다.",
+                "fy6_title": "1인 기업·프리랜서",
+                "fy6_desc": "제안서·견적·정산 메모부터 고객 응대 문구, 일정·알람까지. 직원 없이도 챙길 걸 챙기게 됩니다.",
+                "f1_title": "전역 AI 주입",
+                "f1_desc": "단축키 한 번으로 AI 메뉴를 호출하세요. 생성된 텍스트가 현재 활성화된 프로그램의 커서 위치에 바로 타이핑됩니다.",
+                "f2_title": "개인 지식 기반 대답 (RAG)",
+                "f2_desc": "내 메모와 문서를 지식베이스로 씁니다. 내 자료에 근거한 답이 필요할 때 켜면 됩니다.",
+                "f3_title": "모델 선택의 자유",
+                "f3_desc": "인터넷 없이 쓰는 로컬 모드와 빠르고 똑똑한 클라우드 모드. 작업에 맞게 고르면 됩니다.",
+                "f4_title": "Vision 화면 캡처 질의",
+                "f4_desc": "에러 화면처럼 복사 안 되는 것도 드래그로 캡처해 바로 질문할 수 있습니다.",
+                "f5_title": "Markdown 메모 관리",
+                "f5_desc": "폴더·태그·표·수식을 지원하는 메모 에디터와 AI 어시스턴트가 한 화면에서 돕니다.",
+                "f6_title": "아무렇게나 메모해도 AI가 정리",
+                "f6_desc": "던지듯 적으세요. AI가 내용을 읽고 폴더와 카테고리를 정해 줍니다.",
+                "f7_title": "내 데이터는 내 PC에",
+                "f7_desc": "메모와 일정은 내 PC에만 저장됩니다. API 키도 Windows DPAPI로 로컬에만 보관됩니다.",
+                "story_title": "팔려고 만든 게 아닙니다.",
+                "story_sub": "쓰려고 만든 앱이라, 약속이 다릅니다.",
+                "story_dev_title": "개발자가 편하려고 직접 만든 앱",
+                "story_dev_desc": "매일 쓰는 사람이 직접 만듭니다.",
+                "story_update_title": "한 번 사면, 평생 업데이트",
+                "story_update_desc": "추가 결제 없이 새 기능이 계속 도착합니다.",
+                "story_update_badge": "추가 요금 $0",
+                "story_fix_title": "쓰는 사람이 계속 손봅니다",
+                "story_fix_desc": "매일 직접 쓰면서 고치는 앱이라, 불편한 점이 오래 방치되지 않습니다. 문의 메일도 개발자가 직접 봅니다.",
+                "story_fix_badge": "직접 유지보수 중",
+                "pricing_title": "가격 — 구독 없음",
+                "pricing_sub": "한 번 사면 영원히 내 것입니다.",
+                "pricing_trial_title": "무료 체험",
+                "pricing_trial_1": "• 1개월 전 기능 사용",
+                "pricing_trial_2": "• 신용카드 등록 불필요",
+                "pricing_full_title": "영구 소장",
+                "pricing_once": "일회성",
+                "pricing_full_note": "첫 1개월은 카드 등록 없이 전 기능 무료 체험",
+                "pricing_full_1": "• 모든 기능 무제한",
+                "pricing_full_2": "• 로컬 / 클라우드 연동 무제한",
+                "pricing_full_3": "• Microsoft Store 자동 업데이트 지원",
+                "pricing_cta": "Microsoft Store에서 받기",
+                "pricing_foot": "Microsoft Store 전용 앱입니다. 가격은 접속 국가의 통화로 표시됩니다.",
+                "adv_title": "조금 어려운 이야기, 그래도 알아두세요",
+                "adv_sub": "비싼 API 요금 없이도 충분합니다. 검증된 무료 조합을 안내합니다.",
+                "adv_gemini_title": "Gemini 무료 티어로 충분합니다",
+                "adv_gemini_1": "✓ 결제 연결 전에는 무료 범위 내에서 과금 없음",
+                "adv_gemini_2": "✓ 대화·RAG·화면 질문·STT가 같은 키 하나로 동작",
+                "adv_gemini_3": "✓ 한도 초과 시 오류 안내가 뜨므로 모르고 결제될 걱정 없음",
+                "adv_gemini_4": "✓ 사용량이 늘면 AI Studio 지출 상한 설정 권장",
+                "adv_ollama_title": "검증된 조합: Ollama 로컬 + Ollama 클라우드",
+                "adv_ollama_desc": "Ollama 하나면 두 가지가 다 됩니다. API 키 발급 없이 무료 범위 내에서 사용하세요.",
+                "adv_ollama_1": "✓ 로컬 모델 — 인터넷 없이 동작, 데이터가 PC를 떠나지 않음",
+                "adv_ollama_2": "✓ 클라우드 모델 — Ollama 로그인만으로 무료 한도 내 사용, API 키 불필요",
+                "adv_ollama_note": "지원하는 연결: Ollama 로컬 모델 · Ollama 클라우드 모델 · Google Gemini API.",
+                "cta_title": "일하는 곳에서 바로 부르세요.",
+                "cta_sub": "개발자가 편하려고 직접 만든 앱, 직접 써보세요.",
+                "footer_privacy": "개인정보처리방침",
+                "footer_support": "지원 문의"
+            },
+            "en": {
+                "meta_title": "LLM Injector - A Global AI Assistant Built by a Developer for Comfort",
+                "nav_features": "Features", "nav_overlay": "Overlay", "nav_usecases": "Use Cases", "nav_pricing": "Pricing",
+                "nav_cta": "Get it on the Store",
+                "hero_title": 'Your knowledge, managed. <br /><span class="hero-gradient-text">Your writing, done for you.</span>',
+                "hero_sub": "A global AI assistant a developer built for his own comfort",
+                "rot1": "A global AI assistant built for the developer's own comfort",
+                "rot2": "An app its own developer uses every day",
+                "rot3": "Made to be used, not sold",
+                "hero_chip1": "Works in any app",
+                "hero_chip2": "Answers from your docs",
+                "hero_chip3": "Memos, schedules, and alarms in one go",
+                "hero_chip4": "Effortless saving to knowledge",
+                "hero_chip5": "Answers from saved knowledge",
+                "hero_desc": "Call AI with one hotkey in any program.<br>No copy-paste — it types right into the document you are writing.",
+                "hero_cta": "Download on Microsoft Store",
+                "hero_price_note": "Lifetime license / No subscription",
+                "hero_trial_note": "Full features free for the first month",
+                "hero_video_ph": "Demo video slot (link videos/demo.mp4)",
+                "req_title": "Heads up: you need an AI connection",
+                "req_desc": "LLM Injector ships no built-in AI model. Prepare one of the two options below.",
+                "req_a_title": "Option A: Local AI",
+                "req_a_desc": "Install Ollama, download a model, and connect it. Free, and your data never leaves your PC.",
+                "req_b_title": "Option B: Cloud AI",
+                "req_b_desc": "Get an API key (e.g. Google Gemini) and register it in Settings.",
+                "overlay_title": "Injection Overlay: three ways to call it",
+                "overlay_sub": "Instantly, via hotkey.",
+                "overlay_direct_title": "Direct Input",
+                "overlay_direct_when": "When you want to write right now, with no reference text",
+                "overlay_direct_desc": "No selected text needed. Dictate a sentence as it comes to mind, and the result lands at your cursor.",
+                "overlay_chat_title": "Chat",
+                "overlay_chat_when": "When you need back-and-forth refinement with AI",
+                "overlay_chat_desc": "A window for work that never ends in one shot. Ask, revise, ask again — context carries over.",
+                "overlay_quick_title": "Quick Run",
+                "overlay_quick_when": "When selected text should trigger a fixed action",
+                "overlay_quick_desc": "Summarize, translate, or proofread the dragged text on the spot. No need to type a question.",
+                "ph_overlay_direct": "Screenshot slot: Direct Input overlay (images/overlay-direct.png)",
+                "ph_overlay_chat": "Screenshot slot: Chat overlay (images/overlay-chat.png)",
+                "ph_overlay_quick": "Screenshot slot: Quick Run overlay (images/overlay-quick.png)",
+                "overlay_watch": "Watch demo",
+                "overlay_video_ph": "Press 'Watch demo' on a card above to play its video",
+                "commander_title": "Quick Commander: everything lives here",
+                "commander_sub": "Every tool in the app sits in one command palette.",
+                "cmd_workspace": "Workspace", "cmd_workspace_d": "Switch workspaces",
+                "cmd_memo": "Memo", "cmd_memo_d": "Write Markdown memos",
+                "cmd_kb": "Knowledge Base", "cmd_kb_d": "RAG answers from your docs",
+                "cmd_capture": "Screenshot Q&A", "cmd_capture_d": "Ask about a dragged capture",
+                "cmd_alarm": "Alarms", "cmd_alarm_d": "Manage reminders",
+                "cmd_sync": "Instant Cloud Sync", "cmd_sync_d": "Back up and sync now",
+                "cmd_settings": "Settings", "cmd_settings_d": "Models · hotkeys · sync",
+                "cmd_scrape": "Web Scraping", "cmd_scrape_d": "Pull in page content",
+                "cmd_stt": "Call STT & Summary", "cmd_stt_d": "Transcribe and summarize calls<br>(Gemini API key needed, free tier)",
+                "cmd_explorer": "Project Explorer", "cmd_explorer_d": "Browse and query file trees",
+                "cmd_doc2md": "Docs → MD", "cmd_doc2md_d": "Convert PDFs and docs to Markdown",
+                "cmd_filesave": "Save File to Knowledge", "cmd_filesave_d": "Store a file straight into knowledge",
+                "usecase_title": "How it gets used",
+                "usecase_sub": "Nothing grand — just the chores that repeat every day.",
+                "uc1_title": "Stop rewriting email replies three times",
+                "uc1_desc": "Drag a received mail, get a draft via Quick Run, fix the tone, done. No hopping in and out of the mailbox.",
+                "uc2_title": "Pull action items out of meeting notes",
+                "uc2_desc": "Summarize call transcripts from STT into action items only. They pile up in your memos as-is.",
+                "uc3_title": "End the wrestling match with error logs",
+                "uc3_desc": "Ask about uncopyable console screens via drag capture. No need to move logs into files.",
+                "uc4_title": "Let your own documents answer",
+                "uc4_desc": "Keep PDFs and docs in the knowledge base and get answers grounded in your own material.",
+                "uc5_title": "Overseas mail without the awkwardness",
+                "uc5_desc": "Refine nuance in the chat window instead of leaving raw machine English. A writing partner, not a translator.",
+                "uc6_title": "Messy notes still end up organized",
+                "uc6_desc": "Dump thoughts as they come; AI assigns folders and categories. Note-organizing time disappears.",
+                "features_title": "Not inside files — everywhere you work.",
+                "features_sub": "Features built to become a daily tool.",
+                "foryou_title": "A good fit if you are",
+                "foryou_sub": "No grand requirements. If you write and organize something every day, it fits.",
+                "fy1_title": "Developers & vibe coders",
+                "fy1_desc": "Ask about error screens via capture, skim unfamiliar code in the project explorer, and pile changes into memos. For cutting the fiddly work.",
+                "fy2_title": "Educators",
+                "fy2_desc": "Lesson materials, notices and newsletters, grading notes. Less time on repeat paperwork, more on teaching.",
+                "fy3_title": "Students",
+                "fy3_desc": "Lecture transcription and summaries, report drafts, exam prep. Everything organized becomes your knowledge.",
+                "fy4_title": "Office workers",
+                "fy4_desc": "Email replies, meeting action items, report drafts. Keep your programs as they are and finish at the cursor.",
+                "fy5_title": "Researchers",
+                "fy5_desc": "Store paper PDFs, ask about prior work, and memo what you read. Less wandering around for materials.",
+                "fy6_title": "Solo businesses & freelancers",
+                "fy6_desc": "Proposals, quotes, settlement memos, customer messages, schedules and alarms. Stay on top of it all with no staff.",
+                "f1_title": "Global AI injection",
+                "f1_desc": "Call the AI menu with one hotkey. Generated text is typed right at the cursor of the active program.",
+                "f2_title": "Answers from personal knowledge (RAG)",
+                "f2_desc": "Use your memos and documents as a knowledge base. Turn it on when you need grounded answers.",
+                "f3_title": "Your choice of model",
+                "f3_desc": "Offline local mode or fast, smart cloud mode. Pick what fits the job.",
+                "f4_title": "Vision screenshot Q&A",
+                "f4_desc": "Drag-capture even uncopyable error screens and ask about them directly.",
+                "f5_title": "Markdown memo management",
+                "f5_desc": "A memo editor with folders, tags, tables, and math, plus an AI assistant on one screen.",
+                "f6_title": "Messy memos get organized by AI",
+                "f6_desc": "Just dump it in. AI reads the content and assigns folders and categories.",
+                "f7_title": "Your data stays on your PC",
+                "f7_desc": "Memos and schedules live only on your PC. API keys are kept locally with Windows DPAPI.",
+                "story_title": "Not built to be sold.",
+                "story_sub": "Built to be used — so the promises differ.",
+                "story_dev_title": "An app a developer built for his own comfort",
+                "story_dev_desc": "Made by someone who uses it every day.",
+                "story_update_title": "Buy once, updated for life",
+                "story_update_desc": "New features keep arriving with no extra payment.",
+                "story_update_badge": "$0 extra",
+                "story_fix_title": "Maintained by someone who uses it",
+                "story_fix_desc": "Fixed while being used daily, so annoyances never sit long. Support mail is read by the developer himself.",
+                "story_fix_badge": "Maintained firsthand",
+                "pricing_title": "Pricing — no subscription",
+                "pricing_sub": "Buy once and it is yours forever.",
+                "pricing_trial_title": "Free trial",
+                "pricing_trial_1": "• Full features for 1 month",
+                "pricing_trial_2": "• No credit card required",
+                "pricing_full_title": "Lifetime",
+                "pricing_once": "one-time",
+                "pricing_full_note": "First month free, no card required",
+                "pricing_full_1": "• Every feature unlimited",
+                "pricing_full_2": "• Unlimited local / cloud connections",
+                "pricing_full_3": "• Automatic updates via Microsoft Store",
+                "pricing_cta": "Get it on Microsoft Store",
+                "pricing_foot": "Microsoft Store exclusive. Prices show in your country's currency.",
+                "adv_title": "Slightly technical, but worth knowing",
+                "adv_sub": "No expensive API bills needed. Proven free setups below.",
+                "adv_gemini_title": "The Gemini free tier is enough",
+                "adv_gemini_1": "✓ No charges within the free tier before adding billing",
+                "adv_gemini_2": "✓ Chat, RAG, screenshot Q&A, and STT on a single key",
+                "adv_gemini_3": "✓ Over-limit errors surface visibly, so no surprise bills",
+                "adv_gemini_4": "✓ Set AI Studio spend caps as usage grows",
+                "adv_ollama_title": "Proven combo: Ollama local + Ollama cloud",
+                "adv_ollama_desc": "One Ollama install covers both. No API keys, within free limits.",
+                "adv_ollama_1": "✓ Local models — work offline, data never leaves the PC",
+                "adv_ollama_2": "✓ Cloud models — free limits with just an Ollama login, no API key",
+                "adv_ollama_note": "Supported connections: Ollama local · Ollama cloud · Google Gemini API.",
+                "cta_title": "Call it from where you work.",
+                "cta_sub": "Try the app a developer built for his own comfort.",
+                "footer_privacy": "Privacy Policy",
+                "footer_support": "Support"
+            },
+            "ja": {
+                "meta_title": "LLM Injector - 開発者が自分のために作った常駐AIアシスタント",
+                "nav_features": "機能", "nav_overlay": "オーバーレイ", "nav_usecases": "活用例", "nav_pricing": "価格",
+                "nav_cta": "ストアで入手",
+                "hero_title": '知識は自分で整理し、<br /><span class="hero-gradient-text">文章は代わりに書いてくれるAI</span>',
+                "hero_sub": "開発者が自分のために作った常駐AIアシスタント",
+                "rot1": "開発者が自分のために作った常駐AIアシスタント",
+                "rot2": "開発者自身も毎日使うアプリ",
+                "rot3": "本当に使うために作ったアプリ",
+                "hero_chip1": "どのアプリでも",
+                "hero_chip2": "自分の文書で回答",
+                "hero_chip3": "メモ・予定管理・アラームまでひとまとめ",
+                "hero_chip4": "かんたん知識保存",
+                "hero_chip5": "保存した知識で回答",
+                "hero_desc": "どのプログラムでもホットキーひとつでAIを呼び出せます。<br>コピペなしで、書いている文書に直接入力されます。",
+                "hero_cta": "Microsoft Storeでダウンロード",
+                "hero_price_note": "買い切り / サブスクなし",
+                "hero_trial_note": "最初の1か月は全機能無料",
+                "hero_video_ph": "デモ動画枠 (videos/demo.mp4 接続予定)",
+                "req_title": "先に知ってください: AI接続が必要です",
+                "req_desc": "LLM InjectorはAIモデルを内蔵しないクライアントアプリです。次のどちらかを用意してください。",
+                "req_a_title": "選択肢A: ローカルAI",
+                "req_a_desc": "Ollamaを入れてモデルを受け取り、アプリに連携します。無料で、データはPCの外に出ません。",
+                "req_b_title": "選択肢B: クラウドAI",
+                "req_b_desc": "Google GeminiなどのAPIキーを発行してアプリ設定に登録します。",
+                "overlay_title": "Injection Overlay:場面に合わせた3つの呼び方",
+                "overlay_sub": "ホットキーですばやく。",
+                "overlay_direct_title": "直接入力",
+                "overlay_direct_when": "参照テキストなしで、今すぐ入力したいとき",
+                "overlay_direct_desc": "選択したテキストがなくても大丈夫です。浮かんだ文をそのまま書き取り、結果はカーソル位置に直接入ります。",
+                "overlay_chat_title": "チャット",
+                "overlay_chat_when": "AIとやり取りしながら整えたいとき",
+                "overlay_chat_desc": "一度で終わらない仕事のための窓です。聞いて、直してもらって、また聞いてください。文脈は続きます。",
+                "overlay_quick_title": "クイック実行",
+                "overlay_quick_when": "選択したテキストで決まった仕事をさせたいとき",
+                "overlay_quick_desc": "ドラッグしたテキストを材料に、要約・翻訳・校正などを即実行します。質問を打つ必要はありません。",
+                "ph_overlay_direct": "スクリーンショット枠: 直接入力オーバーレイ (images/overlay-direct.png)",
+                "ph_overlay_chat": "スクリーンショット枠: チャットオーバーレイ (images/overlay-chat.png)",
+                "ph_overlay_quick": "スクリーンショット枠: クイック実行オーバーレイ (images/overlay-quick.png)",
+                "overlay_watch": "デモを見る",
+                "overlay_video_ph": "上のカードの「デモを見る」を押すと該当動画が再生されます",
+                "commander_title": "クイックコマンダー: 全部ここに",
+                "commander_sub": "アプリの全ツールがひとつのコマンドパレットに集まっています。",
+                "cmd_workspace": "ワークスペース", "cmd_workspace_d": "作業空間の切替",
+                "cmd_memo": "メモ", "cmd_memo_d": "Markdownメモ作成",
+                "cmd_kb": "ナレッジベース", "cmd_kb_d": "自分の文書で答えるRAG",
+                "cmd_capture": "画面キャプチャ質問", "cmd_capture_d": "ドラッグ撮影後に質問",
+                "cmd_alarm": "アラーム管理", "cmd_alarm_d": "予約・リマインダー確認",
+                "cmd_sync": "クラウド即時同期", "cmd_sync_d": "今すぐバックアップ・同期",
+                "cmd_settings": "環境設定", "cmd_settings_d": "モデル・ホットキー・同期",
+                "cmd_scrape": "Webスクレイピング", "cmd_scrape_d": "ページ内容の取得",
+                "cmd_stt": "通話STT・要約", "cmd_stt_d": "通話の書き起こしと要約<br>(Gemini APIキー必要・無料枠)",
+                "cmd_explorer": "プロジェクト explorer", "cmd_explorer_d": "ファイル構成の探索・質問",
+                "cmd_doc2md": "文書 → MD変換", "cmd_doc2md_d": "PDF・文書をMarkdownに",
+                "cmd_filesave": "ファイル知識保存", "cmd_filesave_d": "ファイルを知識に直接保存",
+                "usecase_title": "こう使います",
+                "usecase_sub": "大げさな話ではなく、毎日繰り返す仕事です。",
+                "uc1_title": "メール返信を3回書き直さない",
+                "uc1_desc": "届いたメールをドラッグしてクイック実行で下書きを受け取り、口調だけ整えて終わりです。",
+                "uc2_title": "議事録からタスクを抜き出す",
+                "uc2_desc": "通話STTで書き起こした会議内容を要約し、実行項目だけ整理します。整理済みはメモに積まれます。",
+                "uc3_title": "エラーログとの格闘を終わらせる",
+                "uc3_desc": "コピーできないコンソール画面はドラッグ撮影で質問します。ログをファイルに移す必要はありません。",
+                "uc4_title": "自分の文書に答えさせる",
+                "uc4_desc": "PDF・文書をナレッジベースに入れておけば、自分の資料で答えます。",
+                "uc5_title": "海外メールを不自然じゃなく",
+                "uc5_desc": "書いた英文のままにせず、チャットでニュアンスまで整えます。翻訳機ではなく執筆相手です。",
+                "uc6_title": "適当に書いても整理される",
+                "uc6_desc": "思いつくまま書き散らかせば、AIがフォルダとカテゴリを決めます。メモ整理の時間が消えます。",
+                "features_title": "ファイルの中ではなく、働くすべての場所で。",
+                "features_sub": "毎日使う道具になるために作った機能です。",
+                "foryou_title": "こんな方におすすめ",
+                "foryou_sub": "大げさな条件はありません。毎日何かを書いて整理する方なら合います。",
+                "fy1_title": "開発者 & バイブコーダー",
+                "fy1_desc": "エラー画面は撮影で聞き、未知のコードは explorer で眺め、変更はメモに積みます。手間のかかる仕事を減らすためです。",
+                "fy2_title": "教育関係者",
+                "fy2_desc": "教材整理、お知らせ・家庭通信の下書き、採点メモまで。繰り返しの文書仕事を減らして授業に使ってください。",
+                "fy3_title": "学生",
+                "fy3_desc": "講義の書き起こしと要約、レポート下書き、試験対策に。整理済みはそのまま自分の知識になります。",
+                "fy4_title": "会社員",
+                "fy4_desc": "メール返信、議事録の実行項目、報告書下書きまで。使うプログラムはそのまま、カーソル前で終わらせます。",
+                "fy5_title": "研究者",
+                "fy5_desc": "論文 PDF を知識に入れて先行研究を聞き、読んだものはメモに。資料探しが減ります。",
+                "fy6_title": "個人事業・フリーランス",
+                "fy6_desc": "提案書・見積・精算メモから顧客対応文、予定・アラームまで。ひとりでも抜け漏れなく。",
+                "f1_title": "グローバルAI注入",
+                "f1_desc": "ホットキーひとつでAIメニューを呼び出します。生成文は今のプログラムのカーソル位置に直接入力されます。",
+                "f2_title": "個人知識で答える (RAG)",
+                "f2_desc": "自分のメモと文書をナレッジベースに使います。根拠ある答えが要るときにどうぞ。",
+                "f3_title": "モデルの自由",
+                "f3_desc": "ネットなしのローカルモードと速く賢いクラウドモード。仕事に合わせてどうぞ。",
+                "f4_title": "Vision画面キャプチャ質問",
+                "f4_desc": "エラー画面のようなコピー不可もドラッグ撮影ですぐ質問できます。",
+                "f5_title": "Markdownメモ管理",
+                "f5_desc": "フォルダ・タグ・表・数式のメモエディタとAIアシスタントが一画面で助けます。",
+                "f6_title": "適当メモもAIが整理",
+                "f6_desc": "投げるように書いてください。AIが内容を読んでフォルダとカテゴリを決めます。",
+                "f7_title": "データは自分のPCに",
+                "f7_desc": "メモと予定は自分のPCにだけ保存されます。APIキーもWindows DPAPIでローカル保管です。",
+                "story_title": "売るために作ったのではありません。",
+                "story_sub": "使うために作ったので、約束が違います。",
+                "story_dev_title": "開発者が自分のために作ったアプリ",
+                "story_dev_desc": "毎日使う人が直接作ります。",
+                "story_update_title": "一度買えば、 평생アップデート",
+                "story_update_desc": "追加料金なしで新機能が届き続けます。",
+                "story_update_badge": "追加料金 $0",
+                "story_fix_title": "使う人が直し続けます",
+                "story_fix_desc": "毎日使いながら直すので、不便は長く放置されません。問い合わせも開発者本人が読みます。",
+                "story_fix_badge": "直接メンテ中",
+                "pricing_title": "価格 — サブスクなし",
+                "pricing_sub": "一度買えば永遠に自分のものです。",
+                "pricing_trial_title": "無料体験",
+                "pricing_trial_1": "• 1か月間全機能",
+                "pricing_trial_2": "• カード登録不要",
+                "pricing_full_title": "買い切り",
+                "pricing_once": "一度きり",
+                "pricing_full_note": "最初の1か月はカード登録なしで全機能無料",
+                "pricing_full_1": "• 全機能無制限",
+                "pricing_full_2": "• ローカル / クラウド無制限",
+                "pricing_full_3": "• Microsoft Store自動更新対応",
+                "pricing_cta": "Microsoft Storeで入手",
+                "pricing_foot": "Microsoft Store専用アプリです。価格はお住まいの国の通貨で表示されます。",
+                "adv_title": "少し難しい話ですが、知っておいてください",
+                "adv_sub": "高いAPI料金は要りません。検証済みの無料構成を案内します。",
+                "adv_gemini_title": "Gemini無料枠で十分です",
+                "adv_gemini_1": "✓ 課金連携前は無料範囲内で課金なし",
+                "adv_gemini_2": "✓ 会話・RAG・画面質問・STTが同じキーひとつで動作",
+                "adv_gemini_3": "✓ 上限超過はエラー表示されるので知らぬ間の課金なし",
+                "adv_gemini_4": "✓ 使用量が増えたらAI Studio支出上限の設定を推奨",
+                "adv_ollama_title": "検証済み構成: Ollamaローカル + Ollamaクラウド",
+                "adv_ollama_desc": "Ollamaひとつで両方いけます。APIキー発行なしで無料範囲内でどうぞ。",
+                "adv_ollama_1": "✓ ローカルモデル — ネットなしで動作、データはPCの外に出ない",
+                "adv_ollama_2": "✓ クラウドモデル — Ollamaログインだけで無料枠内利用、APIキー不要",
+                "adv_ollama_note": "対応接続: Ollamaローカル · Ollamaクラウド · Google Gemini API。",
+                "cta_title": "働く場所でそのまま呼んでください。",
+                "cta_sub": "開発者が自分のために作ったアプリ、使ってみてください。",
+                "footer_privacy": "プライバシーポリシー",
+                "footer_support": "サポート"
+            },
+            "zh": {
+                "meta_title": "LLM Injector - 开发者为自己打造的全局 AI 助手",
+                "nav_features": "功能", "nav_overlay": "浮层", "nav_usecases": "使用案例", "nav_pricing": "价格",
+                "nav_cta": "前往商店获取",
+                "hero_title": '知识自动整理，<br /><span class="hero-gradient-text">写作由它代笔的 AI</span>',
+                "hero_sub": "开发者为图自己方便亲手打造的全局 AI 助手",
+                "rot1": "开发者为图自己方便亲手打造的全局 AI 助手",
+                "rot2": "开发者本人每天都在用的应用",
+                "rot3": "为真用而打造的应用",
+                "hero_chip1": "在任何应用中可用",
+                "hero_chip2": "用你的文档作答",
+                "hero_chip3": "备忘、日程、提醒一站搞定",
+                "hero_chip4": "知识保存,一步到位",
+                "hero_chip5": "用已存知识作答",
+                "hero_desc": "在任何程序中按一次快捷键即可呼出 AI。<br>无需复制粘贴，直接输入到正在写的文档中。",
+                "hero_cta": "在 Microsoft Store 下载",
+                "hero_price_note": "买断制 / 无订阅",
+                "hero_trial_note": "首月全功能免费体验",
+                "hero_video_ph": "演示视频占位 (即将接入 videos/demo.mp4)",
+                "req_title": "先了解一下: 需要连接 AI",
+                "req_desc": "LLM Injector 是不内置 AI 客户端应用。请准备以下二者之一。",
+                "req_a_title": "方案 A: 本地 AI",
+                "req_a_desc": "安装 Ollama 并下载模型后接入应用。免费,数据不出本机。",
+                "req_b_title": "方案 B: 云端 AI",
+                "req_b_desc": "申请 Google Gemini 等 API 密钥并填入应用设置。",
+                "overlay_title": "Injection Overlay:对应三种场景的三种呼出方式",
+                "overlay_sub": "快捷键，迅速呼出。",
+                "overlay_direct_title": "直接输入",
+                "overlay_direct_when": "无需参考文本,现在就要写的时候",
+                "overlay_direct_desc": "不需要选中文本。想到哪句就直接写下来,结果直达光标处。",
+                "overlay_chat_title": "对话窗",
+                "overlay_chat_when": "需要和 AI 来回打磨的时候",
+                "overlay_chat_desc": "为一次搞不定的工作准备的窗口。提问、修改、再提问,上下文不断。",
+                "overlay_quick_title": "快速执行",
+                "overlay_quick_when": "用选中文本触发固定动作的时候",
+                "overlay_quick_desc": "以拖选文本为材料,即刻完成摘要·翻译·校对等动作,无需打字提问。",
+                "ph_overlay_direct": "截图占位:直接输入浮层 (images/overlay-direct.png)",
+                "ph_overlay_chat": "截图占位:对话窗浮层 (images/overlay-chat.png)",
+                "ph_overlay_quick": "截图占位:快速执行浮层 (images/overlay-quick.png)",
+                "overlay_watch": "观看演示",
+                "overlay_video_ph": "点击上方卡片的“观看演示”即播放对应视频",
+                "commander_title": "快捷指挥官:全部都在这里",
+                "commander_sub": "应用里的所有工具,都收进一个命令面板。",
+                "cmd_workspace": "工作区", "cmd_workspace_d": "切换工作空间",
+                "cmd_memo": "备忘录", "cmd_memo_d": "编写 Markdown 笔记",
+                "cmd_kb": "知识库", "cmd_kb_d": "用你的文档作答 RAG",
+                "cmd_capture": "截图提问", "cmd_capture_d": "拖选截图后提问",
+                "cmd_alarm": "提醒管理", "cmd_alarm_d": "查看预约·提醒",
+                "cmd_sync": "云端即时同步", "cmd_sync_d": "立即备份·同步",
+                "cmd_settings": "环境设置", "cmd_settings_d": "模型·快捷键·同步",
+                "cmd_scrape": "网页抓取", "cmd_scrape_d": "抓取页面内容",
+                "cmd_stt": "通话语音转写·摘要", "cmd_stt_d": "通话记录与摘要<br>(需 Gemini API 密钥，免费档)",
+                "cmd_explorer": "项目浏览器", "cmd_explorer_d": "浏览文件结构·提问",
+                "cmd_doc2md": "文档 → MD 转换", "cmd_doc2md_d": "PDF·文档转 Markdown",
+                "cmd_filesave": "文件存入知识库", "cmd_filesave_d": "把文件直接存入知识",
+                "usecase_title": "就是这么用的",
+                "usecase_sub": "没有豪言壮语,全是每天重复的小事。",
+                "uc1_title": "邮件回复,不再改三遍",
+                "uc1_desc": "拖选收到的邮件,用快速执行拿到回信草稿,只改语气就好,不用来回进出邮箱。",
+                "uc2_title": "从会议记录里拎出待办",
+                "uc2_desc": "把通话 STT 转写的会议内容摘要成待办项,整理完直接沉淀到备忘录。",
+                "uc3_title": "告别和报错日志摔跤",
+                "uc3_desc": "无法复制的控制台画面用拖选截图提问,不用再把日志倒进文件。",
+                "uc4_title": "让自己的文档来作答",
+                "uc4_desc": "把 PDF·文档放进知识库,就用自己的资料作答,少翻旧记录。",
+                "uc5_title": "海外邮件,不再别扭",
+                "uc5_desc": "别留着机器英文,在对话窗里把语气打磨到位,是写作搭档不是翻译机。",
+                "uc6_title": "随手记,也能被整理好",
+                "uc6_desc": "想到哪写到哪,AI 会定好文件夹和分类,整理笔记的时间消失了。",
+                "features_title": "不在文件里,而在你工作的每个地方。",
+                "features_sub": "为成为每天用的工具而做的功能。",
+                "foryou_title": "推荐这些朋友使用",
+                "foryou_sub": "没有苛刻条件,每天写点记点的人都合适。",
+                "fy1_title": "开发者和 vibe coder",
+                "fy1_desc": "报错截图直接问,陌生代码用项目浏览器看,改动随手记进备忘,专治费手的事。",
+                "fy2_title": "教育工作者",
+                "fy2_desc": "课件整理、通知家书草稿、评分备忘都行,少花时间在重复文书上,多留给课堂。",
+                "fy3_title": "学生",
+                "fy3_desc": "课堂转写摘要、报告草稿、备考整理都好用,整理完直接沉淀成你的知识。",
+                "fy4_title": "上班族",
+                "fy4_desc": "邮件回复、会议待办、报告草稿都行,程序照常用,在光标前搞定。",
+                "fy5_title": "研究者",
+                "fy5_desc": "把论文 PDF 存进知识库再问前人工作,读过的都记下来,少为找资料发愁。",
+                "fy6_title": "一人公司·自由职业",
+                "fy6_desc": "方案报价结算备忘、客服话术、日程提醒都行,一个也能安排得明明白白。",
+                "f1_title": "全局 AI 注入",
+                "f1_desc": "按一次快捷键呼出 AI 菜单,生成文本直接打到当前程序的光标处。",
+                "f2_title": "基于个人知识作答 (RAG)",
+                "f2_desc": "用自己的备忘和文档当知识库,需要有依据的答案时打开即可。",
+                "f3_title": "模型自由选",
+                "f3_desc": "离线保安全的本地模式,和又快又聪明的云端模式,按活儿选。",
+                "f4_title": "Vision 截图提问",
+                "f4_desc": "报错画面这种复制不了的,拖选截图就能直接问。",
+                "f5_title": "Markdown 备忘管理",
+                "f5_desc": "支持文件夹·标签·表格·公式的编辑器和 AI 助手同屏协作。",
+                "f6_title": "随手记,AI 来整理",
+                "f6_desc": "随便丢进来就行,AI 会读内容定好文件夹和分类。",
+                "f7_title": "数据只在你的电脑里",
+                "f7_desc": "备忘和日程只存本机,API 密钥也只用 Windows DPAPI 本地保管。",
+                "story_title": "不是为了卖而做的。",
+                "story_sub": "为了用而做的,所以承诺不一样。",
+                "story_dev_title": "开发者为图自己方便亲手做的应用",
+                "story_dev_desc": "每天用的人亲手打造。",
+                "story_update_title": "买一次,终身更新",
+                "story_update_desc": "无需追加付费,新功能持续送达。",
+                "story_update_badge": "追加费用 $0",
+                "story_fix_title": "用的人持续亲手维护",
+                "story_fix_desc": "边用边改,所以别扭的地方不会被长期晾着,咨询邮件也是开发者亲自看。",
+                "story_fix_badge": "亲自维护中",
+                "pricing_title": "价格 — 无订阅",
+                "pricing_sub": "买一次,就永远是你的。",
+                "pricing_trial_title": "免费体验",
+                "pricing_trial_1": "• 1 个月全功能",
+                "pricing_trial_2": "• 无需绑卡",
+                "pricing_full_title": "买断",
+                "pricing_once": "一次性",
+                "pricing_full_note": "首月免绑卡全功能免费",
+                "pricing_full_1": "• 所有功能无限制",
+                "pricing_full_2": "• 本地 / 云端连接无限制",
+                "pricing_full_3": "• 支持 Microsoft Store 自动更新",
+                "pricing_cta": "前往 Microsoft Store 获取",
+                "pricing_foot": "Microsoft Store 独占应用,价格按所在国家货币显示。",
+                "adv_title": "有点难,但值得知道",
+                "adv_sub": "不需要昂贵的 API 账单,经验证的免费组合如下。",
+                "adv_gemini_title": "Gemini 免费档就够了",
+                "adv_gemini_1": "✓ 未绑卡前只在免费额度内,不会扣费",
+                "adv_gemini_2": "✓ 对话·RAG·截图问·STT 共用一把密钥",
+                "adv_gemini_3": "✓ 超限会明确报错,不怕被悄悄扣费",
+                "adv_gemini_4": "✓ 用量上来后建议设 AI Studio 支出上限",
+                "adv_ollama_title": "经验证组合: Ollama 本地 + Ollama 云",
+                "adv_ollama_desc": "装一个 Ollama 两种都行,免申请密钥,在免费额度内用。",
+                "adv_ollama_1": "✓ 本地模型 — 离线运行,数据不出本机",
+                "adv_ollama_2": "✓ 云端模型 — 登录 Ollama 即享免费额度,免密钥",
+                "adv_ollama_note": "支持的连接: Ollama 本地 · Ollama 云 · Google Gemini API。",
+                "cta_title": "就在工作的地方叫它吧。",
+                "cta_sub": "开发者为自己做的应用,亲自试试看。",
+                "footer_privacy": "隐私政策",
+                "footer_support": "技术支持"
+            }
+        };
+
+        // ===== 언어 전환 =====
+        var LANG_KEY = "llm-landing-lang";
+        function detectLang() {
+            try {
+                var saved = localStorage.getItem(LANG_KEY);
+                if (saved && I18N[saved]) return saved;
+            } catch (e) {}
+            var nav = (navigator.language || "ko").toLowerCase();
+            if (nav.indexOf("ja") === 0) return "ja";
+            if (nav.indexOf("zh") === 0) return "zh";
+            if (nav.indexOf("en") === 0) return "en";
+            return "ko";
+        }
+        function setLang(lang) {
+            if (!I18N[lang]) lang = "ko";
+            var dict = I18N[lang];
+            document.documentElement.lang = lang;
+            document.querySelectorAll("[data-i18n]").forEach(function (el) {
+                var k = el.getAttribute("data-i18n");
+                if (dict[k] !== undefined) el.innerHTML = dict[k];
+            });
+            document.title = dict["meta_title"] || document.title;
+            document.querySelectorAll(".lang-pill").forEach(function (b) {
+                b.classList.toggle("active", b.getAttribute("data-lang") === lang);
+            });
+            var sel = document.getElementById("lang-select");
+            if (sel) sel.value = lang;
+            try { localStorage.setItem(LANG_KEY, lang); } catch (e) {}
+            renderPrices();
+            renderRot(); // 로테이터 문구도 현재 언어로 교체
+        }
+        document.querySelectorAll(".lang-pill").forEach(function (b) {
+            b.addEventListener("click", function () { setLang(b.getAttribute("data-lang")); });
+        });
+        var langSel = document.getElementById("lang-select");
+        if (langSel) langSel.addEventListener("change", function () { setLang(langSel.value); });
+
+        // ===== 스토어 링크 연결 =====
+        document.querySelectorAll("[data-store-link]").forEach(function (a) {
+            a.href = STORE_URL;
+        });
+
+        // ===== 오버레이 모드별 시연 영상 =====
+        // 영상 파일이 videos/ 폴더에 들어오면 그대로 동작합니다.
+        // (파일이 아직 없으면 플레이스홀더가 유지됩니다.)
+        var OVERLAY_VIDEOS = {
+            "direct": "videos/overlay-direct.mp4",
+            "chat": "videos/overlay-chat.mp4",
+            "quick": "videos/overlay-quick.mp4"
+        };
+        function playOverlayVideo(mode, title) {
+            var v = document.getElementById("overlay-video");
+            var ph = document.getElementById("overlay-video-ph");
+            var cap = document.getElementById("overlay-video-cap");
+            var box = document.getElementById("overlay-demo");
+            if (!v || !OVERLAY_VIDEOS[mode]) return;
+            v.onerror = function () {
+                v.classList.add("hidden");
+                if (ph) ph.style.display = "flex";
+            };
+            try {
+                v.src = OVERLAY_VIDEOS[mode];
+                v.classList.remove("hidden");
+                if (ph) ph.style.display = "none";
+                if (cap) cap.textContent = title || "";
+                if (box && box.scrollIntoView) {
+                    box.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+                var pr = v.play();
+                if (pr && pr.catch) pr.catch(function () {});
+            } catch (e) {}
+        }
+        document.querySelectorAll("[data-overlay-video]").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                var card = btn.closest(".minimal-card");
+                var title = "";
+                if (card) {
+                    var h3 = card.querySelector("h3");
+                    if (h3) title = h3.textContent;
+                }
+                document.querySelectorAll("[data-overlay-video]").forEach(function (b) {
+                    b.classList.remove("bg-gray-900", "text-white", "border-gray-900");
+                });
+                btn.classList.add("bg-gray-900", "text-white", "border-gray-900");
+                playOverlayVideo(btn.getAttribute("data-overlay-video"), title);
+            });
+        });
+
+        // ===== 동적 가격 표시 =====
+        function detectRegion() {
+            // navigator.language (예: ko-KR, ko) → 국가 코드. 실패 시 DEFAULT.
+            try {
+                var parts = (navigator.language || "").split("-");
+                var cc = (parts[1] || "").toUpperCase();
+                // 언어만 있고 국가가 없을 때의 매핑 (ko → KR 등)
+                var langOnly = { "KO": "KR", "JA": "JP", "ZH": "CN", "EN": "US", "DE": "DE", "FR": "FR" };
+                var lang = (parts[0] || "").toUpperCase();
+                if (!PRICE_TABLE[cc] && langOnly[lang]) {
+                    cc = langOnly[lang];
+                }
+                return PRICE_TABLE[cc] ? cc : "DEFAULT";
+            } catch (e) { return "DEFAULT"; }
+        }
+        function fmtPrice(entry) {
+            try {
+                return new Intl.NumberFormat(navigator.language || undefined, {
+                    style: "currency", currency: entry.currency
+                }).format(entry.amount);
+            } catch (e) {
+                return entry.currency + " " + entry.amount;
+            }
+        }
+        function renderPrices() {
+            var region = detectRegion();
+            var entry = PRICE_TABLE[region] || PRICE_TABLE["DEFAULT"];
+            document.querySelectorAll("[data-price]").forEach(function (el) {
+                el.textContent = fmtPrice(entry);
+            });
+            document.querySelectorAll("[data-price-zero]").forEach(function (el) {
+                el.textContent = fmtPrice({ currency: entry.currency, amount: 0 });
+            });
+        }
+        function syncStorePrice() {
+            // 실시간 반영용 훅: STORE_PRICING_ENDPOINT가 있으면
+            // { "currency": "KRW", "amount": 13500 } 형태의 응답을 기대하고 덮어쓴다.
+            // (Store 자체에는 웹용 공개 가격 API가 없으므로自社 엔드포인트 연결이 필요합니다.)
+            if (!STORE_PRICING_ENDPOINT) { renderPrices(); return; }
+            fetch(STORE_PRICING_ENDPOINT, { cache: "no-store" })
+                .then(function (r) { return r.json(); })
+                .then(function (j) {
+                    if (j && j.currency && j.amount !== undefined) {
+                        var region = detectRegion();
+                        PRICE_TABLE[region] = { currency: j.currency, amount: j.amount };
+                    }
+                    renderPrices();
+                })
+                .catch(function () { renderPrices(); });
+        }
+
+        // ===== 시그니처 문구 로테이터 (역동 슬라이드) =====
+        var ROT_KEYS = ["rot1", "rot2", "rot3"];
+        var rotIdx = 0, rotTimer = null;
+        function renderRot() {
+            var el = document.getElementById("rot-text");
+            if (!el) return;
+            var dict = I18N[document.documentElement.lang] || I18N["ko"];
+            el.textContent = dict[ROT_KEYS[rotIdx]] || dict[ROT_KEYS[0]];
+        }
+        function cycleRot() {
+            var el = document.getElementById("rot-text");
+            if (!el) return;
+            el.classList.remove("in");
+            el.classList.add("out");
+            setTimeout(function () {
+                rotIdx = (rotIdx + 1) % ROT_KEYS.length;
+                renderRot();
+                el.classList.remove("out");
+                void el.offsetWidth; // 애니메이션 재시작
+                el.classList.add("in");
+            }, 450);
+        }
+        function startRotator() {
+            var reduced = false;
+            try {
+                reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+            } catch (e) {}
+            renderRot();
+            var el = document.getElementById("rot-text");
+            if (el && !reduced) {
+                el.classList.add("in");
+                rotTimer = setInterval(cycleRot, 2800);
+            }
+        }
+
         // 1) 터미널 타이핑 루프
         (function () {
             var lines = [
@@ -387,6 +1401,12 @@
             }, { threshold: 0.15 });
             document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
         })();
+        // 3) 초기 언어 + 가격 + 로테이터
+        // (setLang 안에서 가격·로테이터 문구도 함께 반영)
+        setLang(detectLang());
+        syncStorePrice();
+        startRotator();
     </script>
 </body>
 </html>
+
